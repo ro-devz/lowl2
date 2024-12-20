@@ -5,6 +5,7 @@
 #include "ArtificialObject.hpp"
 #include "StellarObject.hpp"
 #include <SFML/Graphics.hpp>
+#include "Legend.hpp" // Include the legend header
 
 using namespace std;
 
@@ -15,7 +16,7 @@ int main()
 
     // Constants
     const double timeStep = 86400.0; // 1 day per simulation second (in seconds)
-    const double G = 6.67430e-11;     // Gravitational constant
+    const double G = 6.67430e-11;    // Gravitational constant
 
     // Scaling factors
     const double SCREEN_WIDTH = 1200.0;
@@ -30,8 +31,8 @@ int main()
     const double SIZE_SCALE_RATIO = 10.0;    // Size ratio (planet size in real life = 10 times smaller)
 
     // Calculate scaling factors based on the ratios
-    const double SCALE = MAX_DISTANCE / (SCREEN_WIDTH * DISTANCE_SCALE_RATIO);  // 1 pixel = X meters
-    const double SIZE_SCALE = MAX_RADIUS / SIZE_SCALE_RATIO;  // 1 km = X pixels for planet sizes
+    const double SCALE = MAX_DISTANCE / (SCREEN_WIDTH * DISTANCE_SCALE_RATIO); // 1 pixel = X meters
+    const double SIZE_SCALE = MAX_RADIUS / SIZE_SCALE_RATIO;                   // 1 km = X pixels for planet sizes
 
     // Center of the screen
     const double centerX = SCREEN_WIDTH / 2;
@@ -53,6 +54,8 @@ int main()
     // List of objects
     vector<SpaceObject *> objects = {&sun, &mercury, &venus, &earth, &mars, &jupiter, &saturn, &uranus, &neptune};
 
+    Legend legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects);
+    double totalElapsedTime = 0.0;
     while (window.isOpen())
     {
         sf::Event event;
@@ -62,19 +65,25 @@ int main()
                 window.close();
         }
 
-        // Compute gravitational forces
+        // Update the objects and the legend
         for (auto *obj : objects)
         {
             obj->computeGravitationalForces(objects);
         }
 
-        // Update positions and render
+        totalElapsedTime += timeStep;                                // Update total elapsed time
+        legend.update(timeStep, totalElapsedTime, centerX, centerY); // Update the legend
+
         window.clear();
         for (auto *obj : objects)
         {
             obj->update(timeStep);
             obj->render(window, SCALE, centerX, centerY, SIZE_SCALE);
         }
+
+        // Render the legend
+        legend.render(window);
+
         window.display();
     }
 
