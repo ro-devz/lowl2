@@ -50,9 +50,13 @@ int main()
     StellarObject saturn("Saturn", 1.4294e12, 0, 0, 9.687e3, 5.6834e26, "Gold", 116460.0e3);
     StellarObject uranus("Uranus", 2.87099e12, 0, 0, 6.81e3, 8.6810e25, "LightBlue", 50724.0e3);
     StellarObject neptune("Neptune", 4.49825e12, 0, 0, 5.43e3, 1.02413e26, "Blue", 49244.0e3);
+    StellarObject moon("Moon", 384400.0e3, 0, 0, 1.022e3, 7.342e22, "Gray", 1737.4e3);
+
+    // Set Earth as the parent of the Moon
+   // moon.setParent(&earth);
 
     // List of objects
-    vector<SpaceObject *> objects = {&sun, &mercury, &venus, &earth, &mars, &jupiter, &saturn, &uranus, &neptune};
+    vector<SpaceObject *> objects = {&sun, &mercury, &venus, &earth, &mars, &jupiter, &saturn, &uranus, &neptune, &moon};
 
     Legend legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects);
     double totalElapsedTime = 0.0;

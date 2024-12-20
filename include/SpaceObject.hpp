@@ -54,7 +54,7 @@ public:
                 continue;
 
             // Vector from this object to the other object
-            double dx = obj->getX() - x; 
+            double dx = obj->getX() - x; // Using double for higher precision
             double dy = obj->getY() - y;
             double distanceSq = dx * dx + dy * dy;
 
