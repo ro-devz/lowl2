@@ -1,37 +1,56 @@
 # Compiler and flags
 CXX = g++
 CXXFLAGS = -O2 -g -Wall -fmessage-length=0 -IC:/SFML-2.6.2/include -I./include
-LDFLAGS = -LC:\SFML-2.6.2\lib -lsfml-graphics -lsfml-window -lsfml-system
+LDFLAGS = -LC:/SFML-2.6.2/lib
+LDLIBS = -lsfml-graphics -lsfml-window -lsfml-system
 
 # Directories
 SRC_DIR = src
 INC_DIR = include
-BUILD_DIR = debug
+BIN_DIR = bin
+OBJ_DIR = obj
 
 # Source and object files
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
-OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
 
 # Target executable
-TARGET = FinalProject.exe
+TARGET = $(BIN_DIR)/FinalProject.exe
 
-# Rule to build the target
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+# Ensure directories exist
+$(shell if not exist "$(BIN_DIR)" mkdir "$(BIN_DIR)")
+$(shell if not exist "$(OBJ_DIR)" mkdir "$(OBJ_DIR)")
 
-# Rule to build object files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-# Create debug directory if it doesn't exist
-$(BUILD_DIR):
-	mkdir $(BUILD_DIR)
-
-# Convenience targets
+# Main target
 all: $(TARGET)
 
-# Clean target (Windows compatible)
+# Link the executable
+$(TARGET): $(OBJS)
+	@echo Linking...
+	@$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS) $(LDLIBS)
+	@echo Build complete!
+
+# Compile source files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@echo Compiling $<...
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Clean target for Windows
 clean:
-	@if exist $(TARGET) del /f $(TARGET)
-	@if exist $(BUILD_DIR) del /f $(BUILD_DIR)\*.o
-	@if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
+	@echo Cleaning...
+	@if exist "bin\\FinalProject.exe" del /q "bin\\FinalProject.exe"
+	@if exist "$(OBJ_DIR)" rd /s /q "$(OBJ_DIR)"
+	@echo Clean complete!
+
+# Rebuild everything
+rebuild: clean all
+
+# Help target
+help:
+	@echo Available targets:
+	@echo   all      - Build the project (default)
+	@echo   clean    - Remove all built files
+	@echo   rebuild  - Clean and rebuild the project
+	@echo   help     - Show this help message
+
+.PHONY: all clean rebuild help

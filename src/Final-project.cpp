@@ -56,7 +56,7 @@ int main()
    // moon.setParent(&earth);
 
     // List of objects
-    vector<SpaceObject *> objects = {&sun, &mercury, &venus, &earth, &mars, &jupiter, &saturn, &uranus, &neptune, &moon};
+    vector<SpaceObject *> objects = {&sun, &mercury, &venus, &earth, &mars, &jupiter, &saturn, &uranus, &neptune};
 
     Legend legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects);
     double totalElapsedTime = 0.0;
@@ -94,7 +94,6 @@ int main()
                 
                 // Update the view offset
                 SpaceObject::updateViewOffset(worldDeltaX, worldDeltaY);
-                
                 lastMousePos = currentMousePos;
             }
         }
@@ -112,6 +111,7 @@ int main()
         }
 
         // Update and render legend with correct coordinates
+        totalElapsedTime += timeStep;
         legend.update(timeStep, totalElapsedTime, SpaceObject::getViewOffsetX(), SpaceObject::getViewOffsetY());
         legend.render(window);
 
