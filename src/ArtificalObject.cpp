@@ -33,3 +33,16 @@ void ArtificialObject::render(sf::RenderWindow &window, double scale, double cen
     shape.setPosition(screenX - objectWidth / 2, screenY - objectHeight / 2);
     window.draw(shape);
 }
+
+bool ArtificialObject::isClicked(double mouseX, double mouseY, double scale, double centerX, double centerY, double sizeScale) const
+{
+    double screenX = (x - SpaceObject::getViewOffsetX()) / scale + centerX;
+    double screenY = (y - SpaceObject::getViewOffsetY()) / scale + centerY;
+
+    // Rectangle bounds
+    double halfWidth = width / (2.0 * scale);
+    double halfHeight = height / (2.0 * scale);
+
+    return (mouseX >= screenX - halfWidth && mouseX <= screenX + halfWidth &&
+            mouseY >= screenY - halfHeight && mouseY <= screenY + halfHeight);
+}

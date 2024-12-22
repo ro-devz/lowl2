@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <windows.h>
 #include "ArtificialObject.hpp"
 #include "StellarObject.hpp"
 #include <SFML/Graphics.hpp>
@@ -15,28 +16,17 @@ int main()
     window.setFramerateLimit(60);
 
     // Constants
-    const double timeStep = 86400.0; // 1 day per simulation second (in seconds)
-    const double G = 6.67430e-11;    // Gravitational constant
+    double realTimeStep = 86000.0; // 1 hour in simulation (real time step)
 
     // Scaling factors
     const double SCREEN_WIDTH = 1200.0;
     const double SCREEN_HEIGHT = 800.0;
-
-    // Maximum distance (from the Sun to Neptune) and radius (Sun's radius)
-    const double MAX_DISTANCE = 4.49825e12; // Neptune's distance (meters)
-    const double MAX_RADIUS = 696340.0e3;   // Sun's radius (meters)
-
-    // Define the scaling ratios:
-    const double DISTANCE_SCALE_RATIO = 5.0; // Distance ratio (5 meters in real life = 1 pixel on screen)
-    const double SIZE_SCALE_RATIO = 10.0;    // Size ratio (planet size in real life = 10 times smaller)
-
-    // Calculate scaling factors based on the ratios
+    const double MAX_DISTANCE = 4.49825e12;                                    // Neptune's distance
+    const double MAX_RADIUS = 696340.0e3;                                      // Sun's radius
+    const double DISTANCE_SCALE_RATIO = 10.0;                                  // Distance ratio
+    const double SIZE_SCALE_RATIO = 2000.0;                                    // Size ratio
     const double SCALE = MAX_DISTANCE / (SCREEN_WIDTH * DISTANCE_SCALE_RATIO); // 1 pixel = X meters
     const double SIZE_SCALE = MAX_RADIUS / SIZE_SCALE_RATIO;                   // 1 km = X pixels for planet sizes
-
-    // Center of the screen
-    const double centerX = SCREEN_WIDTH / 2;
-    const double centerY = SCREEN_HEIGHT / 2;
 
     // Sun (reference point at the origin)
     StellarObject sun("Sun", 0, 0, 0, 0, 1.989e30, "Yellow", 696340.0e3); // Radius: 696,340 km
@@ -51,18 +41,24 @@ int main()
     StellarObject uranus("Uranus", 2.87099e12, 0, 0, 6.81e3, 8.6810e25, "LightBlue", 50724.0e3);
     StellarObject neptune("Neptune", 4.49825e12, 0, 0, 5.43e3, 1.02413e26, "Blue", 49244.0e3);
     StellarObject moon("Moon", 384400.0e3, 0, 0, 1.022e3, 7.342e22, "Gray", 1737.4e3);
-
-    // Set Earth as the parent of the Moon
-   // moon.setParent(&earth);
+    StellarObject europa("Europa", 0.671e9, 0, 0, 1.0e3, 4.7998e22, "White", 1560.8e3);
+    StellarObject io("Io", 0.422e9, 0, 0, 1.8e3, 8.9319e22, "Yellow", 1821.6e3);
 
     // List of objects
-    vector<SpaceObject *> objects = {&sun, &mercury, &venus, &earth, &mars, &jupiter, &saturn, &uranus, &neptune};
+    vector<SpaceObject *> objects = {&sun, &earth, &moon, &europa, &io, &mercury, &venus, &mars, &jupiter, &saturn, &uranus, &neptune};
 
-    Legend legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects);
+    Legend legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects, 10.f, 10.f);
+    Legend infoMenu(SCREEN_WIDTH, SCREEN_HEIGHT, objects, SCREEN_WIDTH - 300.f, 10.f);
     double totalElapsedTime = 0.0;
 
-     bool isMouseDragging = false;
+    // Use sf::Clock to measure elapsed time
+    sf::Clock clock;
+
+    bool isMouseDragging = false;
     sf::Vector2i lastMousePos;
+    double viewScale = 1.0; // Add zoom factor
+    SpaceObject *selectedObject = nullptr;
+    bool isObjectSelected = false;
 
     while (window.isOpen())
     {
@@ -71,50 +67,112 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            
-            // Handle mouse movement
-            else if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Middle) {
+            else if (event.type == sf::Event::MouseButtonPressed)
+            {
+                if (event.mouseButton.button == sf::Mouse::Middle)
+                {
                     isMouseDragging = true;
                     lastMousePos = sf::Mouse::getPosition(window);
                 }
+
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    double mouseX = event.mouseButton.x;
+                    double mouseY = event.mouseButton.y;
+
+                    // Check if the user clicked on an object
+                    SpaceObject *clickedObject = nullptr;
+                    for (auto *obj : objects)
+                    {
+                        if (obj->isClicked(mouseX, mouseY, SCALE / viewScale, window.getSize().x / 2.0, window.getSize().y / 2.0, SIZE_SCALE))
+                        {
+                            clickedObject = obj;
+                            break;
+                        }
+                    }
+
+                    if (clickedObject && !isObjectSelected) // Only update if no object is selected
+                    {
+                        selectedObject = clickedObject;
+                        isObjectSelected = true; // Mark the object as selected
+                    }
+                    else if (!clickedObject) // Deselect if clicking outside any object
+                    {
+                        selectedObject = nullptr;
+                        isObjectSelected = false; // Reset selection flag
+                    }
+                }
             }
-            else if (event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Middle) {
+            else if (event.type == sf::Event::MouseButtonReleased)
+            {
+                if (event.mouseButton.button == sf::Mouse::Middle)
+                {
                     isMouseDragging = false;
                 }
             }
-            else if (event.type == sf::Event::MouseMoved && isMouseDragging) {
+            else if (event.type == sf::Event::MouseMoved && isMouseDragging)
+            {
                 sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
                 sf::Vector2i delta = currentMousePos - lastMousePos;
-                
-                // Convert screen movement to world coordinates
-                double worldDeltaX = delta.x * SCALE;
-                double worldDeltaY = delta.y * SCALE;
-                
-                // Update the view offset
+
+                double worldDeltaX = -delta.x * SCALE / viewScale;
+                double worldDeltaY = -delta.y * SCALE / viewScale;
+
                 SpaceObject::updateViewOffset(worldDeltaX, worldDeltaY);
                 lastMousePos = currentMousePos;
             }
+            // Add mouse wheel zoom
+            else if (event.type == sf::Event::MouseWheelScrolled)
+            {
+
+                if (event.mouseWheelScroll.delta > 0)
+                    viewScale *= 1.1; // Zoom in
+                else
+                    viewScale *= 0.9; // Zoom out
+
+                // Clamp zoom levels
+                viewScale = std::max(0.01, std::min(viewScale, 10.0));
+            }
+            else if (event.type == sf::Event::KeyPressed)
+            {
+                if (!selectedObject)
+                {
+                    if (event.key.code == sf::Keyboard::Add)
+                        realTimeStep += 3600.f;
+                    if (event.key.code == sf::Keyboard::Subtract)
+                        realTimeStep -= 3600.f;
+                    if (event.key.code == sf::Keyboard::Multiply)
+                        SpaceObject::updateViewOffset(-SpaceObject::getViewOffsetX(), -SpaceObject::getViewOffsetY()); // Reset to center the Sun
+                }
+            }
         }
+
+        // Measure elapsed time since last frame
+        float deltaTime = clock.restart().asSeconds();
+
+        // Adjust the time step for smoother movement
+        double adjustedTimeStep = realTimeStep * deltaTime;
 
         // Update simulation
-        for (auto *obj : objects) {
+        for (auto *obj : objects)
             obj->computeGravitationalForces(objects);
-            obj->update(timeStep);
-        }
 
-        // Clear and render
         window.clear(sf::Color::Black);
-        for (auto *obj : objects) {
-            obj->render(window, SCALE, window.getSize().x / 2.0, window.getSize().y / 2.0, SIZE_SCALE);
+
+        // Update simulation based on the adjusted time step
+        totalElapsedTime += adjustedTimeStep;
+
+        legend.update(realTimeStep, totalElapsedTime, SpaceObject::getViewOffsetX(), SpaceObject::getViewOffsetY());
+
+        for (auto *obj : objects)
+        {
+            obj->update(adjustedTimeStep);
+            obj->render(window, SCALE / viewScale, window.getSize().x / 2.0, window.getSize().y / 2.0, SIZE_SCALE);
         }
 
-        // Update and render legend with correct coordinates
-        totalElapsedTime += timeStep;
-        legend.update(timeStep, totalElapsedTime, SpaceObject::getViewOffsetX(), SpaceObject::getViewOffsetY());
         legend.render(window);
-
+        infoMenu.updateObject(selectedObject);
+        infoMenu.render(window);
         window.display();
     }
 

@@ -35,7 +35,8 @@ public:
     static void updateViewOffset(double dx, double dy);
     static double getViewOffsetX();
     static double getViewOffsetY();
-    const string &getName() const;
+    void setVelocity(double newVx, double newVy);
+        const string &getName() const;
     double getX() const;
     double getY() const;
     double getMass() const;
@@ -43,6 +44,7 @@ public:
     void computeGravitationalForces(const vector<SpaceObject *> &objects);
     virtual void update(double timeStep);
     virtual void render(sf::RenderWindow &window, double scale, double centerX, double centerY, double maxSize) const = 0;
+    virtual bool isClicked(double mouseX, double mouseY, double scale, double centerX, double centerY, double sizeScale) const = 0;
 };
 
 #endif

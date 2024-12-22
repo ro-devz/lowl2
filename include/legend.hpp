@@ -16,10 +16,11 @@ private:
 
 public:
     // Constructor
-    Legend(double screenWidth, double screenHeight, std::vector<SpaceObject*> objects);
+    Legend(double screenWidth, double screenHeight, std::vector<SpaceObject*> objects, float x, float y);
 
     // Update method to update time and object information
     void update(double timeStep, double totalElapsedTime, double centerX, double centerY);
+    void updateObject(SpaceObject *selectedObject);
 
     // Render method to draw the legend to the window
     void render(sf::RenderWindow &window);

@@ -32,11 +32,13 @@ void SpaceObject::computeGravitationalForces(const vector<SpaceObject *> &object
 
         double dx = obj->getX() - x, dy = obj->getY() - y;
         double distanceSq = dx * dx + dy * dy;
-        if (distanceSq < MIN_DISTANCE * MIN_DISTANCE) 
+
+        if (distanceSq < MIN_DISTANCE * MIN_DISTANCE)
             distanceSq = MIN_DISTANCE * MIN_DISTANCE;
 
         double distance = sqrt(distanceSq);
         double accelMag = G * obj->getMass() / distanceSq;
+
         ax += accelMag * dx / distance;
         ay += accelMag * dy / distance;
     }
@@ -49,3 +51,8 @@ void SpaceObject::update(double timeStep)
     x += vx * timeStep;
     y += vy * timeStep;
 }
+
+ void SpaceObject::setVelocity(double newVx, double newVy) {
+        vx = newVx;
+        vy = newVy;
+    }
