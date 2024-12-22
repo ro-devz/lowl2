@@ -1,7 +1,7 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -O2 -g -Wall -fmessage-length=0 -IC:/SFML-2.6.2/include -I./include
-LDFLAGS = -LC:/SFML-2.6.2/lib
+CXXFLAGS = -O2 -g -Wall -fmessage-length=0 -I/SFML-2.6.2/include -I./include
+LDFLAGS = -L/SFML-2.6.2/lib
 LDLIBS = -lsfml-graphics -lsfml-window -lsfml-system
 
 # Directories

@@ -20,13 +20,13 @@ class SpaceObject
 {
 protected:
     static double viewOffsetX, viewOffsetY; // Shared offsets
-    string name;   // A name
-    string color;  // A color
-    double x, y;   // A position (in m, for the center of mass, in the coordinates system)
-    double vx, vy; // A velocity (in m/s)
-    double ax, ay; // An acceleration (in m/s²)
-    double mass;   // A mass (in kg)
-    double radius; // A radius (in m)
+    string name;                            // A name
+    string color;                           // A color
+    double x, y;                            // A position (in m, for the center of mass, in the coordinates system)
+    double vx, vy;                          // A velocity (in m/s)
+    double ax, ay;                          // An acceleration (in m/s²)
+    double mass;                            // A mass (in kg)
+    double radius;                          // A radius (in m)
 
 public:
     SpaceObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color);
@@ -36,7 +36,7 @@ public:
     static double getViewOffsetX();
     static double getViewOffsetY();
     void setVelocity(double newVx, double newVy);
-        const string &getName() const;
+    const string &getName() const;
     double getX() const;
     double getY() const;
     double getMass() const;
