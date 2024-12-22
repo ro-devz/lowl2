@@ -16,35 +16,26 @@ Legend::Legend(double screenWidth, double screenHeight, std::vector<SpaceObject*
     text.setPosition(10.f, 10.f);  // Set position to top-left corner, with some padding
 }
 
-void Legend::update(double timeStep, double totalElapsedTime, double centerX, double centerY)
+void Legend::update(double timeStep, double totalElapsedTime, double viewOffsetX, double viewOffsetY)
 {
     std::stringstream legendStream;
-
-    // Time Step and Total Elapsed Time (in days)
-    legendStream << "Time Step: " << toString(timeStep / 86400.0) << " days\n";  // Convert timeStep from seconds to days
-    legendStream << "Elapsed Time: " << toString(totalElapsedTime / 86400.0) << " days\n";  // Convert totalElapsedTime to days
-
-    // Center of the map coordinates (in km)
-    legendStream << "Center: (" << toString(centerX / 1000.0) << " km, " << toString(centerY / 1000.0) << " km)\n";
-
-    // Information about each object
-    for (auto *obj : objects)
-    {
+    
+    legendStream << "Time Step: " << toString(timeStep / 86400.0) << " days\n";
+    legendStream << "Elapsed Time: " << toString(totalElapsedTime / 86400.0) << " days\n";
+    
+    // Show view center in astronomical coordinates
+    legendStream << "View Center: (" 
+                << toString(viewOffsetX / 1000.0) << " km, " 
+                << toString(viewOffsetY / 1000.0) << " km)\n\n";
+    
+    // Show object positions relative to the Sun at (0,0)
+    for (auto *obj : objects) {
         legendStream << obj->getName() << ": ";
-        
-        // If it's the Sun, set its position to (centerX, centerY)
-        if (obj->getName() == "Sun") {
-            legendStream << "Position: (" << toString(centerX / 1000.0) << " km, " 
-                         << toString(centerY / 1000.0) << " km)\n";  // Convert from meters to km
-        } else {
-            // Otherwise, display the object's actual position
-            legendStream << "Position: ("
-                         << toString(obj->getX() / 1000.0) << " km, "
-                         << toString(obj->getY() / 1000.0) << " km)\n";  // Convert from meters to km
-        }
+        legendStream << "Position: ("
+                    << toString(obj->getX() / 1000.0) << " km, "
+                    << toString(obj->getY() / 1000.0) << " km)\n";
     }
-
-    // Set the string for the legend text
+    
     text.setString(legendStream.str());
 }
 void Legend::render(sf::RenderWindow &window)

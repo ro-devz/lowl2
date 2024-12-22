@@ -60,6 +60,10 @@ int main()
 
     Legend legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects);
     double totalElapsedTime = 0.0;
+
+     bool isMouseDragging = false;
+    sf::Vector2i lastMousePos;
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -67,25 +71,48 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            
+            // Handle mouse movement
+            else if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Middle) {
+                    isMouseDragging = true;
+                    lastMousePos = sf::Mouse::getPosition(window);
+                }
+            }
+            else if (event.type == sf::Event::MouseButtonReleased) {
+                if (event.mouseButton.button == sf::Mouse::Middle) {
+                    isMouseDragging = false;
+                }
+            }
+            else if (event.type == sf::Event::MouseMoved && isMouseDragging) {
+                sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
+                sf::Vector2i delta = currentMousePos - lastMousePos;
+                
+                // Convert screen movement to world coordinates
+                double worldDeltaX = delta.x * SCALE;
+                double worldDeltaY = delta.y * SCALE;
+                
+                // Update the view offset
+                SpaceObject::updateViewOffset(worldDeltaX, worldDeltaY);
+                
+                lastMousePos = currentMousePos;
+            }
         }
 
-        // Update the objects and the legend
-        for (auto *obj : objects)
-        {
+        // Update simulation
+        for (auto *obj : objects) {
             obj->computeGravitationalForces(objects);
-        }
-
-        totalElapsedTime += timeStep;                                // Update total elapsed time
-        legend.update(timeStep, totalElapsedTime, centerX, centerY); // Update the legend
-
-        window.clear();
-        for (auto *obj : objects)
-        {
             obj->update(timeStep);
-            obj->render(window, SCALE, centerX, centerY, SIZE_SCALE);
         }
 
-        // Render the legend
+        // Clear and render
+        window.clear(sf::Color::Black);
+        for (auto *obj : objects) {
+            obj->render(window, SCALE, window.getSize().x / 2.0, window.getSize().y / 2.0, SIZE_SCALE);
+        }
+
+        // Update and render legend with correct coordinates
+        legend.update(timeStep, totalElapsedTime, SpaceObject::getViewOffsetX(), SpaceObject::getViewOffsetY());
         legend.render(window);
 
         window.display();

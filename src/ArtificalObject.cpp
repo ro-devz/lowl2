@@ -25,13 +25,8 @@ void ArtificialObject::render(sf::RenderWindow &window, double scale, double cen
     double objectWidth = width  / ratio ;  // 50 pixels for the largest object
     double objectHeight = height  / ratio ;
 
-
-    
-
-    // Create a rectangle shape with the scaled size
     sf::RectangleShape shape(sf::Vector2f(objectWidth, objectHeight));
 
-    // Set the color of the shape based on the color string
     if (color == "Gray") shape.setFillColor(sf::Color(169, 169, 169)); // Gray color
     else if (color == "Green") shape.setFillColor(sf::Color(0, 255, 0)); // Green color
 

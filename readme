@@ -58,6 +58,7 @@ Navigate to the folder containing your source files and run the following comman
 ```bash
 g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project.cpp .\src\StellarObject.cpp .\src\ArtificalObject.cpp -lsfml-graphics -lsfml-window -lsfml-system
 ```
+//TODO
 
 ### 4. Run the code:
 
