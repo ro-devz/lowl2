@@ -23,8 +23,8 @@ int main()
     const double SCREEN_HEIGHT = 800.0;
     const double MAX_DISTANCE = 4.49825e12;                                    // Neptune's distance
     const double MAX_RADIUS = 696340.0e3;                                      // Sun's radius
-    const double DISTANCE_SCALE_RATIO = 10.0;                                  // Distance ratio
-    const double SIZE_SCALE_RATIO = 2000.0;                                    // Size ratio
+    const double DISTANCE_SCALE_RATIO = 100.0;                                  // Distance ratio
+    const double SIZE_SCALE_RATIO = 20000.0;                                    // Size ratio
     const double SCALE = MAX_DISTANCE / (SCREEN_WIDTH * DISTANCE_SCALE_RATIO); // 1 pixel = X meters
     const double SIZE_SCALE = MAX_RADIUS / SIZE_SCALE_RATIO;                   // 1 km = X pixels for planet sizes
 
@@ -40,9 +40,29 @@ int main()
     StellarObject saturn("Saturn", 1.4294e12, 0, 0, 9.687e3, 5.6834e26, "Gold", 116460.0e3);
     StellarObject uranus("Uranus", 2.87099e12, 0, 0, 6.81e3, 8.6810e25, "LightBlue", 50724.0e3);
     StellarObject neptune("Neptune", 4.49825e12, 0, 0, 5.43e3, 1.02413e26, "Blue", 49244.0e3);
-    StellarObject moon("Moon", 384400.0e3, 0, 0, 1.022e3, 7.342e22, "Gray", 1737.4e3);
-    StellarObject europa("Europa", 0.671e9, 0, 0, 1.0e3, 4.7998e22, "White", 1560.8e3);
-    StellarObject io("Io", 0.422e9, 0, 0, 1.8e3, 8.9319e22, "Yellow", 1821.6e3);
+    double moonOrbitSpeed = sqrt((6.67430e-11 * earth.getMass()) / 384400.0e3); // Calculate orbital velocity
+    StellarObject moon("Moon",
+                       earth.getX() + 384400.0e3, // Position relative to Earth
+                       earth.getY(),
+                       0,                  // Earth's velocity components
+                       29.783e3 + moonOrbitSpeed, // Add orbital velocity to Earth's y-velocity
+                       7.342e22, "Gray", 1737.4e3);
+
+    // Jupiter's moons - positions relative to Jupiter
+    double europaOrbitSpeed = sqrt((6.67430e-11 * jupiter.getMass()) / 0.671e9);
+    StellarObject europa("Europa",jupiter.getX() + 0.671e9, // Position relative to Jupiter
+                         jupiter.getY(),
+                         0,                    // Jupiter's velocity components
+                         13.07e3 + europaOrbitSpeed, // Add orbital velocity to Jupiter's y-velocity
+                         4.7998e22, "White", 1560.8e3);
+
+    double ioOrbitSpeed = sqrt((6.67430e-11 * jupiter.getMass()) / 0.422e9);
+    StellarObject io("Io",
+                     jupiter.getX() + 0.422e9, // Position relative to Jupiter
+                     jupiter.getY(),
+                     0,                // Jupiter's velocity components
+                     13.07e3 + ioOrbitSpeed, // Add orbital velocity to Jupiter's y-velocity
+                     8.9319e22, "Yellow", 1821.6e3);
 
     // List of objects
     vector<SpaceObject *> objects = {&sun, &earth, &moon, &europa, &io, &mercury, &venus, &mars, &jupiter, &saturn, &uranus, &neptune};
