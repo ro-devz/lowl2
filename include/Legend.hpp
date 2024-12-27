@@ -16,9 +16,9 @@
 class Legend
 {
 private:
-    sf::Font font;               // Font to use for the text
-    sf::Text text;               // Text object for rendering information
-    double screenWidth, screenHeight; // Screen dimensions
+    sf::Font font;                      // Font to use for the text
+    sf::Text text;                      // Text object for rendering information
+    double screenWidth, screenHeight;   // Screen dimensions
     std::vector<SpaceObject *> objects; // Objects to display information about
 
 public:
@@ -30,6 +30,7 @@ public:
 
     // Render the legend to the window
     void render(sf::RenderWindow &window);
+    void setObjects(std::vector<SpaceObject *> updatedObjects);
 
 private:
     // Helper function to format a number as a string

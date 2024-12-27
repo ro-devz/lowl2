@@ -72,3 +72,8 @@ bool StellarObject::isClicked(double mouseX, double mouseY, double scale, double
     double dy = mouseY - screenY;
     return (dx * dx + dy * dy) <= (planetSize * planetSize);
 }
+
+double StellarObject::getCollisionRadius() const
+{
+    return radius;
+}

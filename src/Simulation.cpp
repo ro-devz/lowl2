@@ -36,44 +36,109 @@ Simulation::Simulation()
 void Simulation::initializeObjects()
 {
     // Sun
-    auto *sun = new StellarObject("Sun", 0, 0, 0, 0, 1.989e30, "Yellow", 696340.0e3);
+    StellarObject *sun = new StellarObject("Sun", 0, 0, 0, 0, 1.989e30, "Yellow", 696340.0e3);
 
     // Planets
-    auto *mercury = new StellarObject("Mercury", 57.91e9, 0, 0, 47.872e3, 3.3011e23, "Gray", 4879.0e3);
-    auto *venus = new StellarObject("Venus", 108.2e9, 0, 0, 35.02e3, 4.8675e24, "Yellow", 12104.0e3);
-    auto *earth = new StellarObject("Earth", 149.6e9, 0, 0, 29.783e3, 5.9724e24, "Blue", 12742.0e3);
-    auto *mars = new StellarObject("Mars", 227.94e9, 0, 0, 24.077e3, 6.4171e23, "Red", 6779.0e3);
-    auto *jupiter = new StellarObject("Jupiter", 778.5e9, 0, 0, 13.07e3, 1.8982e27, "Orange", 139820.0e3);
-    auto *saturn = new StellarObject("Saturn", 1.4294e12, 0, 0, 9.687e3, 5.6834e26, "Gold", 116460.0e3);
-    auto *uranus = new StellarObject("Uranus", 2.87099e12, 0, 0, 6.81e3, 8.6810e25, "LightBlue", 50724.0e3);
-    auto *neptune = new StellarObject("Neptune", 4.49825e12, 0, 0, 5.43e3, 1.02413e26, "Blue", 49244.0e3);
+    StellarObject *mercury = new StellarObject("Mercury", 57.91e9, 0, 0, 47.872e3, 3.3011e23, "Gray", 4879.0e3);
+    StellarObject *venus = new StellarObject("Venus", 108.2e9, 0, 0, 35.02e3, 4.8675e24, "Yellow", 12104.0e3);
+    StellarObject *earth = new StellarObject("Earth", 149.6e9, 0, 0, 29.783e3, 5.9724e24, "Blue", 12742.0e3);
+    StellarObject *mars = new StellarObject("Mars", 227.94e9, 0, 0, 24.077e3, 6.4171e23, "Red", 6779.0e3);
+    StellarObject *jupiter = new StellarObject("Jupiter", 778.5e9, 0, 0, 13.07e3, 1.8982e27, "Orange", 139820.0e3);
+    StellarObject *saturn = new StellarObject("Saturn", 1.4294e12, 0, 0, 9.687e3, 5.6834e26, "Gold", 116460.0e3);
+    StellarObject *uranus = new StellarObject("Uranus", 2.87099e12, 0, 0, 6.81e3, 8.6810e25, "LightBlue", 50724.0e3);
+    StellarObject *neptune = new StellarObject("Neptune", 4.49825e12, 0, 0, 5.43e3, 1.02413e26, "Blue", 49244.0e3);
 
     // Moons
     double moonOrbitSpeed = sqrt((6.67430e-11 * earth->getMass()) / 384400.0e3);
-    auto *moon = new StellarObject("Moon",
-                                   earth->getX() + 384400.0e3,
-                                   earth->getY(),
-                                   0,
-                                   29.783e3 + moonOrbitSpeed,
-                                   7.342e22, "Gray", 1737.4e3);
+    StellarObject *moon = new StellarObject("Moon",
+                                            earth->getX() + 384400.0e3,
+                                            earth->getY(),
+                                            0,
+                                            29.783e3 + moonOrbitSpeed,
+                                            7.342e22, "Gray", 1737.4e3);
 
     double europaOrbitSpeed = sqrt((6.67430e-11 * jupiter->getMass()) / 0.671e9);
-    auto *europa = new StellarObject("Europa",
-                                     jupiter->getX() + 0.671e9,
-                                     jupiter->getY(),
-                                     0,
-                                     13.07e3 + europaOrbitSpeed,
-                                     4.7998e22, "White", 1560.8e3);
+    StellarObject *europa = new StellarObject("Europa",
+                                              jupiter->getX() + 0.671e9,
+                                              jupiter->getY(),
+                                              0,
+                                              13.07e3 + europaOrbitSpeed,
+                                              4.7998e22, "White", 1560.8e3);
 
     double ioOrbitSpeed = sqrt((6.67430e-11 * jupiter->getMass()) / 0.422e9);
-    auto *io = new StellarObject("Io",
-                                 jupiter->getX() + 0.422e9,
-                                 jupiter->getY(),
-                                 0,
-                                 13.07e3 + ioOrbitSpeed,
-                                 8.9319e22, "Yellow", 1821.6e3);
+    StellarObject *io = new StellarObject("Io",
+                                          jupiter->getX() + 0.422e9,
+                                          jupiter->getY(),
+                                          0,
+                                          13.07e3 + ioOrbitSpeed,
+                                          8.9319e22, "Yellow", 1821.6e3);
+
+    double ganymedeOrbitSpeed = sqrt((6.67430e-11 * jupiter->getMass()) / 1.07e9);
+    StellarObject *ganymede = new StellarObject("Ganymede",
+                                       jupiter->getX() + 1.07e9,
+                                       jupiter->getY(),
+                                       0,
+                                       13.07e3 + ganymedeOrbitSpeed,
+                                       1.4819e23, "Gray", 2634.1e3);
+
+    // Callisto (Jupiter's moon)
+    double callistoOrbitSpeed = sqrt((6.67430e-11 * jupiter->getMass()) / 1.883e9);
+    StellarObject *callisto = new StellarObject("Callisto",
+                                       jupiter->getX() + 1.883e9,
+                                       jupiter->getY(),
+                                       0,
+                                       13.07e3 + callistoOrbitSpeed,
+                                       1.0759e23, "Gray", 2410.3e3);
+
+    // Titan (Saturn's moon)
+    double titanOrbitSpeed = sqrt((6.67430e-11 * saturn->getMass()) / 1.22e9);
+    StellarObject *titan = new StellarObject("Titan",
+                                    saturn->getX() + 1.22e9,
+                                    saturn->getY(),
+                                    0,
+                                    9.687e3 + titanOrbitSpeed,
+                                    1.3452e23, "Yellow", 2574.7e3);
+
+    ArtificialObject *iss = new ArtificialObject("ISS",
+                                     earth->getX() + 408e5,
+                                     earth->getY(),
+                                     0,
+                                     29.783e3 + 7.66e3,
+                                     419725,
+                                     "Gray",
+                                     108.5,
+                                     51.6,
+                                     4e4);
+
+    // Hubble Space Telescope
+    ArtificialObject *hubble = new ArtificialObject("Hubble",
+                                        earth->getX() + 540e3,
+                                        earth->getY(),
+                                        0,
+                                        29.783e3 + 7.5e3,
+                                        11110,
+                                        "Green",
+                                        13.2,
+                                        4.2,
+                                        2e4);
+
+    // GPS satellite
+    ArtificialObject *gps = new ArtificialObject("GPS",
+                                     earth->getX() + 20200e3,
+                                     earth->getY(),
+                                     0,
+                                     29.783e3 + 3.87e3,
+                                     1630,
+                                     "Green",
+                                     5.3,
+                                     2.7,
+                                     1e4);
 
     objects = {sun, earth, moon, europa, io, mercury, venus, mars, jupiter, saturn, uranus, neptune};
+    objects.push_back(ganymede);
+    objects.push_back(callisto);
+    objects.push_back(titan);
+    objects.push_back(iss);
 }
 
 void Simulation::handleEvents()
@@ -118,11 +183,6 @@ void Simulation::handleEvents()
                     selectedObject = clickedObject;
                     isObjectSelected = true;
                 }
-                else if (!clickedObject)
-                {
-                    selectedObject = nullptr;
-                    isObjectSelected = false;
-                }
             }
         }
         else if (event.type == sf::Event::MouseButtonReleased)
@@ -166,7 +226,7 @@ void Simulation::handleEvents()
             else
                 viewScale *= 0.9;
 
-            viewScale = std::max(0.01, std::min(viewScale, 10.0));
+            viewScale = std::max(0.0001, std::min(viewScale, 100.0));
         }
         else if (event.type == sf::Event::KeyPressed)
         {
@@ -186,7 +246,12 @@ void Simulation::handleEvents()
                     selectedObject->adjustMass(1.1);
 
                 if (event.key.code == sf::Keyboard::Subtract)
-                    selectedObject->adjustMass(0.1);
+                    selectedObject->adjustMass(0.9);
+                if (event.key.code == sf::Keyboard::Escape)
+                {
+                    selectedObject = nullptr;
+                    isObjectSelected = false;
+                }
             }
             if (!selectedObject)
             {
@@ -200,22 +265,71 @@ void Simulation::handleEvents()
         }
     }
 }
-
-void Simulation::update(float deltaTime, Legend *legend)
+void Simulation::update(float deltaTime, Legend *legend, Legend *infoMenu)
 {
     double adjustedTimeStep = realTimeStep * deltaTime;
 
-    for (auto *obj : objects)
+    bool collisionOccurred = false;
+    SpaceObject *obj1 = nullptr;
+    SpaceObject *obj2 = nullptr;
+
+    // First, detect if any collision occurs
+    for (size_t i = 0; i < objects.size() && !collisionOccurred; i++)
+    {
+        for (size_t j = i + 1; j < objects.size() && !collisionOccurred; j++)
+        {
+            double dx = objects[i]->getX() - objects[j]->getX();
+            double dy = objects[i]->getY() - objects[j]->getY();
+            double distance = sqrt(dx * dx + dy * dy);
+
+            if (distance < (objects[i]->getCollisionRadius() + objects[j]->getCollisionRadius()))
+            {
+                collisionOccurred = true;
+                obj1 = objects[i]; // This correctly stores the pointer to the object
+                obj2 = objects[j]; // This correctly stores the pointer to the other object
+            }
+        }
+    }
+
+    // Handle the collision if one occurred
+    if (collisionOccurred)
+    {
+        SpaceObject *newObject = SpaceObject::handleCollision(obj1, obj2);
+
+        // If the selected object is one of the colliding objects, update it to the new object
+        if (selectedObject == obj1 || selectedObject == obj2)
+        {
+            selectedObject = newObject;
+        }
+
+        // Remove obj1 and obj2 from the vector, ensure safe removal
+        objects.erase(std::remove(objects.begin(), objects.end(), obj1), objects.end());
+        objects.erase(std::remove(objects.begin(), objects.end(), obj2), objects.end());
+
+        // Delete the old objects to prevent memory leaks
+        delete obj1;
+        delete obj2;
+
+        // Add the new object created after the collision
+        objects.push_back(newObject);
+        legend->setObjects(objects);
+        infoMenu->setObjects(objects);
+    }
+
+    // Continue with regular update
+    for (SpaceObject *obj : objects)
+    {
         obj->computeGravitationalForces(objects);
+    }
 
     totalElapsedTime += adjustedTimeStep;
-
     legend->update(realTimeStep, totalElapsedTime, SpaceObject::getViewOffsetX(), SpaceObject::getViewOffsetY());
 
-    for (auto *obj : objects)
+    for (SpaceObject *obj : objects)
+    {
         obj->update(adjustedTimeStep);
+    }
 }
-
 void Simulation::render(Legend *legend, Legend *infoMenu)
 {
     window.clear(sf::Color::Black);
@@ -227,13 +341,9 @@ void Simulation::render(Legend *legend, Legend *infoMenu)
                     window.getSize().y / 2.0, SIZE_SCALE);
     }
 
-    // Render the general legend
     legend->render(window);
-
-    // Update and render the info menu
     infoMenu->updateObject(selectedObject);
     infoMenu->render(window);
-
     window.display();
 }
 
@@ -247,7 +357,7 @@ void Simulation::run()
     while (window.isOpen())
     {
         handleEvents();
-        update(clock.restart().asSeconds(), legend);
+        update(clock.restart().asSeconds(), legend, infoMenu);
         render(legend, infoMenu);
     }
 

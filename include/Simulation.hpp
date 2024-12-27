@@ -38,7 +38,7 @@ private:
     const double SIZE_SCALE;
 
     void handleEvents();
-    void update(float deltaTime, Legend *legend);
+    void update(float deltaTime, Legend *legend, Legend *infoMenu);
     void render(Legend *legend, Legend *infoMenu);
     void initializeObjects();
 

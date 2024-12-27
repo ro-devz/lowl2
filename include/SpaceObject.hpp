@@ -40,6 +40,7 @@ public:
     double getX() const;
     double getY() const;
     double getMass() const;
+    string getColor() const { return color; }
 
     void computeGravitationalForces(const vector<SpaceObject *> &objects);
     virtual void update(double timeStep);
@@ -57,12 +58,15 @@ public:
     double getVx() const { return vx; }
     double getVy() const { return vy; }
 
-    // Add acceleration setters for thrust
     void setAcceleration(double newAx, double newAy)
     {
         ax = newAx;
         ay = newAy;
     }
+
+    static SpaceObject *handleCollision(SpaceObject* obj1, SpaceObject* obj2);
+    virtual double getCollisionRadius() const = 0;
+    static sf::Color blendColors(const string& color1, const string& color2);
 };
 
 #endif

@@ -2,16 +2,88 @@
 
 This project simulates stellar objects using SFML graphics. Follow the instructions below to set up the necessary development environment and execute the project on your system.
 
-## Prerequisites
+## Project delivrables
+
+## Planets, Moons, and Satellites 
+
+| **Name**     | **Added to System** | **Type**   | **Associated Planet**  |
+|--------------|---------------------|------------|------------------------|
+| Sun          | ✔️                  | Star       | N/A                    |
+| Mercury      | ✔️                  | Planet     | N/A                    |
+| Venus        | ✔️                  | Planet     | N/A                    |
+| Earth        | ✔️                  | Planet     | N/A                    |
+| Mars         | ✔️                  | Planet     | N/A                    |
+| Jupiter      | ✔️                  | Planet     | N/A                    |
+| Saturn       | ✔️                  | Planet     | N/A                    |
+| Uranus       | ✔️                  | Planet     | N/A                    |
+| Neptune      | ✔️                  | Planet     | N/A                    |
+| Moon         | ✔️                  | Moon       | Earth                  |
+| Europa       | ✔️                  | Moon       | Jupiter                |
+| Io           | ✔️                  | Moon       | Jupiter                |
+| Ganymede     | ❌                  | Moon       | Jupiter                |
+| Callisto     | ❌                  | Moon       | Jupiter                |
+| Titan        | ❌                  | Moon       | Saturn                 |
+| Rhea         | ❌                  | Moon       | Saturn                 |
+| Phobos       | ❌                  | Moon       | Mars                   |
+| Deimos       | ❌                  | Moon       | Mars                   |
+| Mimas        | ❌                  | Moon       | Saturn                 |
+| Enceladus    | ❌                  | Moon       | Saturn                 |
+| Tethys       | ❌                  | Moon       | Saturn                 |
+| Iapetus      | ❌                  | Moon       | Saturn                 |
+| Pan          | ❌                  | Satellite  | Saturn                 |
+| Atlas        | ❌                  | Satellite  | Saturn                 |
+| Prometheus   | ❌                  | Satellite  | Saturn                 |
+| Pandora      | ❌                  | Satellite  | Saturn                 |
+| Epimetheus   | ❌                  | Satellite  | Saturn                 |
+
+
+## Core Simulation Features
+
+| **Feature**                                                                 | **Status**  | **Comments**                                                                 |
+|-----------------------------------------------------------------------------|-------------|-----------------------------------------------------------------------------|
+| **1. Object Creation (Stellar and Artificial Objects)**                      | ✔️ Completed |                                                                             |
+| **2. Gravitational Forces Calculation (Between Objects)**                   | ✔️ Completed |                                                                             |
+| **3. Update Object Positions Based on Gravitational Forces**                 | ✔️ Completed |                                                                             |
+| **4. Handling Orbital Mechanics (Objects Follow orbits based on forces)**    | ✔️ Completed |                                                                             |
+| **5. Object Collision Handling (Gravitational Pull Impact)**                | ❌ In Progress |                                                                             |
+| **6. Time and Real-Time Step Calculation**                                   | ✔️ Completed |                                                                             |
+| **7. Object Rendering (Drawing Objects to the Window)**                      | ✔️ Completed |                                                                             |
+| **8. Update Object Size and Position (based on mass, distance, etc.)**      | ✔️ Completed |                                                                             |
+| **9. Simulation Scaling (Distance and Size Scale)**                          | ✔️ Completed |                                                                             |
+| **10. Dynamic Object Interaction (Mass Changes, Movements, etc.)**           | ✔️ Completed |                                                                             |
+| **11. Legend and Information Details (Display Object Info)**                           | ✔️ Completed |                                                                             |
+
+
+### User Interactions Deliverables
+
+
+| **Interaction**                                                            | **Status**  | **Comments**                                                                   |
+|----------------------------------------------------------------------------|-------------|-----------------------------------------------------------------------------   |
+| **1. Navigation (Pan map using mouse)**                                     | ✔️ Completed |                                                                             |
+| **2. Reset center of map (using `*` key)**                                  | ✔️ Completed |                                                                             |
+| **3. Zoom in (mouse wheel upward)**                                         | ✔️ Completed |`viewScale` is increased by 10%                                              |
+| **4. Zoom out (mouse wheel downward)**                                      | ✔️ Completed |`viewScale` is increased by 10%                                              |
+| **5. Increase time factor (using `+` key when no object is selected)**       | ✔️ Completed | `realTimeStep` is increased by 3600 seconds (1 hour)                       |
+| **6. Decrease time factor (using `-` key when no object is selected)**       | ✔️ Completed | `realTimeStep` is decreased by 3600 seconds (1 hour)                       |
+| **7. Select object (clicking with left mouse button)**                      | ✔️ Completed |                                                                             |
+| **8. Delete selected object (using `Delete` key)**                          | ✔️ Completed |                                                                             |
+| **9. Move selected object (dragging with left mouse button)**               | ✔️ Completed | !! The object must be selected first !! <br> Then, you can click again on the object and dragg it to move it |
+| **10. Apply thrust to selected artificial object (arrow keys)**             | ❌ In Progress |                                                                           |
+| **11. Increase mass of selected object (using `+` key)**                    | ✔️ Completed | Selected object mass is multiplied by 1.1 (10% increase)                    |
+| **12. Decrease mass of selected object (using `-` key)**                    | ✔️ Completed | Selected object mass is multiplied by 0.9 (10% decrease)                    |
+|**13. Deselect object (using Escape key)**	                                    |✔️ Completed	| While Escape not press, the object will be selected and you won't be able to change of selected object                                                                           |
+
+## Installation and Configuration
+### Prerequisites
 
 - **MinGW** (Minimalist GNU for Windows) for GCC
 - **SFML** (Simple and Fast Multimedia Library)
 
-### 1. Install MinGW (GCC)
+#### 1. Install MinGW (GCC)
 
 MinGW is a minimalist development environment for native Microsoft Windows applications. It provides the GCC (GNU Compiler Collection) necessary to compile C++ code.
 
-#### Steps to Install MinGW for VS code:
+##### Steps to Install MinGW for VS code:
 
 2. **Install MinGW**:
      - Install **MinGW-w64** by downloading it from the official site: [MinGW-w64](https://sourceforge.net/projects/mingw-w64/).
@@ -28,11 +100,11 @@ MinGW is a minimalist development environment for native Microsoft Windows appli
      If the command returns the version information for GCC, MinGW has been installed successfully.
 
 
-### 2. Install SFML
+#### 2. Install SFML
 
 SFML is the library used for graphics, window management, and system interaction. Here’s how to install the right version.
 
-#### Steps to Install SFML:
+##### Steps to Install SFML:
 
 1. **Download SFML**:
    - Visit the [SFML Downloads page](https://www.sfml-dev.org/download.php) and download the version **2.6.2** x64 for **MinGW**.
@@ -47,11 +119,11 @@ SFML is the library used for graphics, window management, and system interaction
 4. **Copy SFML DLLs**:
    - From the `\SFML-2.6.2\bin` folder, **copy the `.dll` files** and paste them into the root directory of your project (same location as your compiled executable).
 
-### 3. Compile the Project
+#### 3. Compile the Project
 
 Once you’ve installed MinGW and set up SFML, you can compile the project using the  `make` or the `g++` command in the **Terminal** of VS code.
 
-#### Commands to Compile:
+##### Commands to Compile:
 
 
 
@@ -67,7 +139,7 @@ g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.
 ```
 
 
-### 4. Run the code:
+#### 4. Run the code:
 
 ```.\bin\FinalProject.exe```
 

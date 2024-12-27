@@ -36,6 +36,9 @@ public:
     }
 
     bool isArtificial() const { return true; }
+    virtual double getCollisionRadius() const override { 
+        return sqrt(width * width + height * height) / 2; 
+    }
 };
 
 #endif

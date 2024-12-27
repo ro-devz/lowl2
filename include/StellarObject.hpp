@@ -25,6 +25,7 @@ public:
     ~StellarObject() override = default;
     void render(sf::RenderWindow &window, double scale, double centerX, double centerY, double maxRadius) const override;
     virtual bool isClicked(double mouseX, double mouseY, double scale, double centerX, double centerY, double sizeScale) const override;
+    virtual double getCollisionRadius() const override ; 
 };
 
 #endif

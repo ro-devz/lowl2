@@ -6,13 +6,14 @@
 // Description : Final Project
 //============================================================================
 #include "SpaceObject.hpp"
+#include "StellarObject.hpp"
 
 double SpaceObject::viewOffsetX = 0.0;
 double SpaceObject::viewOffsetY = 0.0;
 
-SpaceObject::SpaceObject(const string &name, double x, double y, double vx, 
+SpaceObject::SpaceObject(const string &name, double x, double y, double vx,
                          double vy, double mass, const string &color)
-    : name(name), color(color), x(x), y(y), vx(vx), vy(vy), ax(0), ay(0), 
+    : name(name), color(color), x(x), y(y), vx(vx), vy(vy), ax(0), ay(0),
       mass(mass), radius(0) {}
 
 void SpaceObject::updateViewOffset(double dx, double dy)
@@ -35,7 +36,8 @@ void SpaceObject::computeGravitationalForces(const vector<SpaceObject *> &object
 
     for (const auto *obj : objects)
     {
-        if (obj == this) continue;
+        if (obj == this)
+            continue;
 
         double dx = obj->getX() - x, dy = obj->getY() - y;
         double distanceSq = dx * dx + dy * dy;
@@ -59,7 +61,42 @@ void SpaceObject::update(double timeStep)
     y += vy * timeStep;
 }
 
- void SpaceObject::setVelocity(double newVx, double newVy) {
-        vx = newVx;
-        vy = newVy;
-    }
+void SpaceObject::setVelocity(double newVx, double newVy)
+{
+    vx = newVx;
+    vy = newVy;
+}
+
+SpaceObject *SpaceObject::handleCollision(SpaceObject* obj1, SpaceObject* obj2) {
+    // Calculate combined properties
+    std::string newName = obj1->getMass() >= obj2->getMass() ? 
+        obj1->getName() + "+" + obj2->getName() : 
+        obj2->getName() + "+" + obj1->getName();
+
+    double totalMass = obj1->getMass() + obj2->getMass();
+
+    // Conservation of momentum
+    double newVx = (obj1->getMass() * obj1->getVx() + obj2->getMass() * obj2->getVx()) / totalMass;
+    double newVy = (obj1->getMass() * obj1->getVy() + obj2->getMass() * obj2->getVy()) / totalMass;
+
+    // Position at center of mass
+    double newX = (obj1->getMass() * obj1->getX() + obj2->getMass() * obj2->getX()) / totalMass;
+    double newY = (obj1->getMass() * obj1->getY() + obj2->getMass() * obj2->getY()) / totalMass;
+
+    // Blend colors
+    string color = "Yellow"; //blendColors(obj1->color, obj2->color);
+
+    // Calculate new radius based on combined area
+    double r1 = obj1->getCollisionRadius();
+    double r2 = obj2->getCollisionRadius();
+    double newRadius = sqrt(r1 * r1 + r2 * r2);
+    return new StellarObject(newName, newX, newY, newVx, newVy, totalMass, color, newRadius);
+}
+
+
+sf::Color SpaceObject::blendColors(const string& color1, const string& color2) {
+    // Add color mapping and blending logic here
+    // For now, return a default color
+    return sf::Color(128, 128, 128);
+}
+

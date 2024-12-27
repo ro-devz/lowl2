@@ -78,3 +78,8 @@ std::string Legend::toString(double number)
     ss << std::fixed << std::setprecision(2) << number;
     return ss.str();
 }
+
+void Legend::setObjects(std::vector<SpaceObject *> updatedObjects)
+{
+    objects = updatedObjects;
+}
