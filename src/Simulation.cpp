@@ -17,6 +17,7 @@ Simulation::Simulation()
       totalElapsedTime(0.0),
       viewScale(1.0),
       isMouseDragging(false),
+      isDraggingObject(false),
       selectedObject(nullptr),
       isObjectSelected(false),
       SCREEN_WIDTH(1200.0),
@@ -84,6 +85,12 @@ void Simulation::handleEvents()
             window.close();
         else if (event.type == sf::Event::MouseButtonPressed)
         {
+            if (event.mouseButton.button == sf::Mouse::Left && selectedObject)
+            {
+                isDraggingObject = true;
+                dragStartPos = sf::Mouse::getPosition(window);
+            }
+
             if (event.mouseButton.button == sf::Mouse::Middle)
             {
                 isMouseDragging = true;
@@ -120,10 +127,11 @@ void Simulation::handleEvents()
         }
         else if (event.type == sf::Event::MouseButtonReleased)
         {
+            if (event.mouseButton.button == sf::Mouse::Left)
+                isDraggingObject = false;
+
             if (event.mouseButton.button == sf::Mouse::Middle)
-            {
                 isMouseDragging = false;
-            }
         }
         else if (event.type == sf::Event::MouseMoved && isMouseDragging)
         {
@@ -135,6 +143,21 @@ void Simulation::handleEvents()
 
             SpaceObject::updateViewOffset(worldDeltaX, worldDeltaY);
             lastMousePos = currentMousePos;
+        }
+        else if (event.type == sf::Event::MouseMoved && isDraggingObject && selectedObject)
+        {
+            sf::Vector2i currentPos = sf::Mouse::getPosition(window);
+            sf::Vector2i delta = currentPos - dragStartPos;
+
+            // Convert screen coordinates to world coordinates
+            double worldDeltaX = delta.x * SCALE / viewScale;
+            double worldDeltaY = delta.y * SCALE / viewScale;
+
+            selectedObject->setPosition(
+                selectedObject->getX() + worldDeltaX,
+                selectedObject->getY() + worldDeltaY);
+
+            dragStartPos = currentPos;
         }
         else if (event.type == sf::Event::MouseWheelScrolled)
         {

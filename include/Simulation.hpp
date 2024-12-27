@@ -21,7 +21,9 @@ private:
     double totalElapsedTime;
     double viewScale;
     bool isMouseDragging;
+    bool isDraggingObject;
     sf::Vector2i lastMousePos;
+    sf::Vector2i dragStartPos;
     SpaceObject* selectedObject;
     bool isObjectSelected;
     
