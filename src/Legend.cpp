@@ -1,15 +1,27 @@
+//============================================================================
+// Name        : Legend.cpp
+// Author      : Romane Devezeaux de Lavergne
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Final Project
+//============================================================================
 #include "Legend.hpp"
 #include <sstream>
 #include <iomanip>
 
+
 Legend::Legend(double screenWidth, double screenHeight, std::vector<SpaceObject *> objects, float x, float y)
     : screenWidth(screenWidth), screenHeight(screenHeight), objects(objects)
 {
-    font.loadFromFile("font/Roboto-Black.ttf");
+    if (!font.loadFromFile("font/Roboto-Black.ttf"))
+    {
+        throw std::runtime_error("Failed to load font: Roboto-Black.ttf");
+    }
+
     text.setFont(font);
-    text.setCharacterSize(11); // Increased font size
+    text.setCharacterSize(11); // Set font size
     text.setFillColor(sf::Color::White);
-    text.setPosition(x, y); // Set position to top-left corner, with some padding
+    text.setPosition(x, y); // Set position to the specified coordinates
 }
 
 void Legend::update(double timeStep, double totalElapsedTime, double viewOffsetX, double viewOffsetY)
@@ -38,7 +50,6 @@ void Legend::update(double timeStep, double totalElapsedTime, double viewOffsetX
 
 void Legend::updateObject(SpaceObject *selectedObject)
 {
-
     std::stringstream legendStream;
     if (selectedObject)
     {
@@ -55,13 +66,12 @@ void Legend::updateObject(SpaceObject *selectedObject)
 
     text.setString(legendStream.str());
 }
+
 void Legend::render(sf::RenderWindow &window)
 {
-    // Draw the legend on the screen
     window.draw(text);
 }
 
-// Helper function to convert a number to string
 std::string Legend::toString(double number)
 {
     std::stringstream ss;

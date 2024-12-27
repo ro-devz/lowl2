@@ -1,3 +1,10 @@
+//============================================================================
+// Name        : SpaceObject.cpp
+// Author      : Romane Devezeaux de Lavergne
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Final Project
+//============================================================================
 #include "SpaceObject.hpp"
 
 double SpaceObject::viewOffsetX = 0.0;

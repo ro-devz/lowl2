@@ -63,7 +63,7 @@ make
 If you can't use the make command, compile the project manually
 
 ```bash
-g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project.cpp .\src\StellarObject.cpp .\src\ArtificalObject.cpp .\src\SpaceObject.cpp .\src\legend.cpp -lsfml-graphics -lsfml-window -lsfml-system
+g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project.cpp .\src\StellarObject.cpp .\src\ArtificalObject.cpp .\src\SpaceObject.cpp .\src\legend.cpp .\src\simulation.cpp -lsfml-graphics -lsfml-window -lsfml-system
 ```
 
 

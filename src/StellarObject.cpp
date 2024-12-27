@@ -1,3 +1,10 @@
+//============================================================================
+// Name        : StellarObject.cpp
+// Author      : Romane Devezeaux de Lavergne
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Final Project
+//============================================================================
 #include "StellarObject.hpp"
 #include <iostream>
 #include <SFML/Graphics.hpp>

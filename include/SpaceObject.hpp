@@ -45,6 +45,24 @@ public:
     virtual void update(double timeStep);
     virtual void render(sf::RenderWindow &window, double scale, double centerX, double centerY, double maxSize) const = 0;
     virtual bool isClicked(double mouseX, double mouseY, double scale, double centerX, double centerY, double sizeScale) const = 0;
+
+    virtual void setPosition(double newX, double newY)
+    {
+        x = newX;
+        y = newY;
+    }
+
+    virtual void adjustMass(double factor) { mass *= factor; }
+
+    double getVx() const { return vx; }
+    double getVy() const { return vy; }
+
+    // Add acceleration setters for thrust
+    void setAcceleration(double newAx, double newAy)
+    {
+        ax = newAx;
+        ay = newAy;
+    }
 };
 
 #endif
