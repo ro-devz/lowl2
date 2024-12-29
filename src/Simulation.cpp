@@ -221,7 +221,6 @@ void Simulation::handleEvents()
             sf::Vector2i currentPos = sf::Mouse::getPosition(window);
             sf::Vector2i delta = currentPos - dragStartPos;
 
-            // Convert screen coordinates to world coordinates
             double worldDeltaX = delta.x * SCALE / viewScale;
             double worldDeltaY = delta.y * SCALE / viewScale;
 
@@ -285,7 +284,6 @@ void Simulation::update(float deltaTime, Legend *legend, Legend *infoMenu)
     SpaceObject *obj1 = nullptr;
     SpaceObject *obj2 = nullptr;
 
-    // First, detect if any collision occurs
     for (size_t i = 0; i < objects.size() && !collisionOccurred; i++)
     {
         for (size_t j = i + 1; j < objects.size() && !collisionOccurred; j++)
@@ -297,38 +295,32 @@ void Simulation::update(float deltaTime, Legend *legend, Legend *infoMenu)
             if (distance < (objects[i]->getCollisionRadius() + objects[j]->getCollisionRadius()))
             {
                 collisionOccurred = true;
-                obj1 = objects[i]; // This correctly stores the pointer to the object
-                obj2 = objects[j]; // This correctly stores the pointer to the other object
+                obj1 = objects[i]; 
+                obj2 = objects[j]; 
             }
         }
     }
 
-    // Handle the collision if one occurred
     if (collisionOccurred)
     {
         SpaceObject *newObject = SpaceObject::handleCollision(obj1, obj2);
 
-        // If the selected object is one of the colliding objects, update it to the new object
         if (selectedObject == obj1 || selectedObject == obj2)
         {
             selectedObject = newObject;
         }
 
-        // Remove obj1 and obj2 from the vector, ensure safe removal
         objects.erase(std::remove(objects.begin(), objects.end(), obj1), objects.end());
         objects.erase(std::remove(objects.begin(), objects.end(), obj2), objects.end());
 
-        // Delete the old objects to prevent memory leaks
         delete obj1;
         delete obj2;
 
-        // Add the new object created after the collision
         objects.push_back(newObject);
         legend->setObjects(objects);
         infoMenu->setObjects(objects);
     }
 
-    // Continue with regular update
     for (SpaceObject *obj : objects)
     {
         obj->computeGravitationalForces(objects);
@@ -345,8 +337,6 @@ void Simulation::update(float deltaTime, Legend *legend, Legend *infoMenu)
 void Simulation::render(Legend *legend, Legend *infoMenu)
 {
     window.clear(sf::Color::Black);
-
-    // Render all objects
     for (auto *obj : objects)
     {
         obj->render(window, SCALE / viewScale, window.getSize().x / 2.0,
@@ -373,11 +363,10 @@ void Simulation::run()
         render(legend, infoMenu);
     }
 
-    // Cleanup
     for (auto *obj : objects)
     {
         delete obj;
     }
-    delete legend; // Clean up the dynamically allocated memory
+    delete legend;
     delete infoMenu;
 }
