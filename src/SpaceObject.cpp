@@ -14,8 +14,7 @@ double SpaceObject::viewOffsetY = 0.0;
 SpaceObject::SpaceObject(const string &name, double x, double y, double vx,
                          double vy, double mass, const string &color, sf::Color sfColor)
     : name(name), color(color), x(x), y(y), vx(vx), vy(vy), ax(0), ay(0),
-      mass(mass), sfColor(sfColor == sf::Color::Transparent ? sf::Color::Transparent : sfColor), radius(0) {}
-
+      mass(mass), radius(0), sfColor(sfColor) {}
 
 void SpaceObject::updateViewOffset(double dx, double dy)
 {
