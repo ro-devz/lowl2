@@ -49,6 +49,7 @@ void Simulation::initializeObjects()
     StellarObject *neptune = new StellarObject("Neptune", 4.49825e12, 0, 0, 5.43e3, 1.02413e26, "Blue", 49244.0e3);
 
     // Moons
+    const double EARTH_RADIUS = 12742.e03;  // Average radius of Earth
     double moonOrbitSpeed = sqrt((6.67430e-11 * earth->getMass()) / 384400.0e3);
     StellarObject *moon = new StellarObject("Moon",
                                             earth->getX() + 384400.0e3,
@@ -99,42 +100,57 @@ void Simulation::initializeObjects()
                                     9.687e3 + titanOrbitSpeed,
                                     1.3452e23, "Yellow", 2574.7e3);
 
-    ArtificialObject *iss = new ArtificialObject("ISS",
-                                     earth->getX() + 408e5,
-                                     earth->getY(),
-                                     0,
-                                     29.783e3 + 7.66e3,
-                                     419725,
-                                     "Gray",
-                                     108.5,
-                                     51.6,
-                                     4e4);
+      ArtificialObject *iss = new ArtificialObject("ISS",
+                                                earth->getX() + (EARTH_RADIUS + 408e3),
+                                                earth->getY(),
+                                                0,
+                                                earth->getVy() + 7.66e3,
+                                                419725,
+                                                "White",
+                                                109,
+                                                51,
+                                                4e4);
 
     // Hubble Space Telescope
+    // Orbits at about 540km above Earth's surface
     ArtificialObject *hubble = new ArtificialObject("Hubble",
-                                        earth->getX() + 540e3,
-                                        earth->getY(),
-                                        0,
-                                        29.783e3 + 7.5e3,
-                                        11110,
-                                        "Green",
-                                        13.2,
-                                        4.2,
-                                        2e4);
+                                                   earth->getX() + (EARTH_RADIUS + 540e3),
+                                                   earth->getY(),
+                                                   0,
+                                                   earth->getVy() + 7.5e3,
+                                                   11110,
+                                                   "Gray",
+                                                   13.2,
+                                                   4.2,
+                                                   2e4);
 
-    // GPS satellite
+    // GPS Satellites
+    // Orbit at about 20,200km above Earth's surface
     ArtificialObject *gps = new ArtificialObject("GPS",
-                                     earth->getX() + 20200e3,
-                                     earth->getY(),
-                                     0,
-                                     29.783e3 + 3.87e3,
-                                     1630,
-                                     "Green",
-                                     5.3,
-                                     2.7,
-                                     1e4);
+                                                earth->getX() + (EARTH_RADIUS + 20200e3),
+                                                earth->getY(),
+                                                0,
+                                                earth->getVy() + 3.87e3,
+                                                1630,
+                                                "White",
+                                                5.3,
+                                                2.7,
+                                                1e4);
 
-    objects = {sun, earth, moon, europa, io, mercury, venus, mars, jupiter, saturn, uranus, neptune, ganymede, callisto, titan, iss, hubble, gps};
+    // James Webb Space Telescope
+    // Located at L2 point, approximately 1.5 million km from Earth
+    ArtificialObject *jwst = new ArtificialObject("JWST",
+                                                 earth->getX() + 1.5e9,  // L2 point
+                                                 earth->getY(),
+                                                 0,
+                                                 earth->getVy() + 0.2e3,
+                                                 6500,
+                                                 "Green",
+                                                 21,
+                                                 14,
+                                                 1e4);
+
+    objects = {sun, earth, moon, europa, io, mercury, venus, mars, jupiter, saturn, uranus, neptune, ganymede, callisto, titan, iss, hubble, gps, jwst};
 }
 
 void Simulation::handleEvents()

@@ -39,6 +39,8 @@ public:
     virtual double getCollisionRadius() const override { 
         return sqrt(width * width + height * height) / 2; 
     }
+    double getWidth() const { return width; }
+    double getHeight() const { return height; }
 };
 
 #endif

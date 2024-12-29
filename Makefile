@@ -2,7 +2,7 @@
 CXX = g++
 CXXFLAGS = -O2 -g -Wall -fmessage-length=0 -I/SFML-2.6.2/include -I./include
 LDFLAGS = -L/SFML-2.6.2/lib
-LDLIBS = -lsfml-graphics -lsfml-window -lsfml-system
+LDLIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network 
 
 # Directories
 SRC_DIR = src
