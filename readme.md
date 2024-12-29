@@ -20,9 +20,9 @@ This project simulates stellar objects using SFML graphics. Follow the instructi
 | Moon         | ✔️                  | Moon       | Earth                  |
 | Europa       | ✔️                  | Moon       | Jupiter                |
 | Io           | ✔️                  | Moon       | Jupiter                |
-| Ganymede     | ❌                  | Moon       | Jupiter                |
-| Callisto     | ❌                  | Moon       | Jupiter                |
-| Titan        | ❌                  | Moon       | Saturn                 |
+| Ganymede     | ✔️                  | Moon       | Jupiter                |
+| Callisto     | ✔️                  | Moon       | Jupiter                |
+| Titan        | ✔️                  | Moon       | Saturn                 |
 | Rhea         | ❌                  | Moon       | Saturn                 |
 | Phobos       | ❌                  | Moon       | Mars                   |
 | Deimos       | ❌                  | Moon       | Mars                   |
@@ -45,13 +45,14 @@ This project simulates stellar objects using SFML graphics. Follow the instructi
 | **2. Gravitational Forces Calculation (Between Objects)**                   | ✔️ Completed |                                                                             |
 | **3. Update Object Positions Based on Gravitational Forces**                 | ✔️ Completed |                                                                             |
 | **4. Handling Orbital Mechanics (Objects Follow orbits based on forces)**    | ✔️ Completed |                                                                             |
-| **5. Object Collision Handling (Gravitational Pull Impact)**                | ❌ In Progress |                                                                             |
+| **5. Object Collision Handling (Gravitational Pull Impact)**                | ✔️ Completed |                                                                             |
 | **6. Time and Real-Time Step Calculation**                                   | ✔️ Completed |                                                                             |
-| **7. Object Rendering (Drawing Objects to the Window)**                      | ✔️ Completed |                                                                             |
-| **8. Update Object Size and Position (based on mass, distance, etc.)**      | ✔️ Completed |                                                                             |
-| **9. Simulation Scaling (Distance and Size Scale)**                          | ✔️ Completed |                                                                             |
-| **10. Dynamic Object Interaction (Mass Changes, Movements, etc.)**           | ✔️ Completed |                                                                             |
-| **11. Legend and Information Details (Display Object Info)**                           | ✔️ Completed |                                                                             |
+| **7. Stellar Object Rendering (Drawing Objects to the Window)**                      | ✔️ Completed |                                                                             |
+| **8. Artificial Object Rendering (Drawing Objects to the Window)**                      | ❌ In Progress |                                                                             |
+| **9. Update Object Size and Position (based on mass, distance, etc.)**      | ✔️ Completed |                                                                             |
+| **10. Simulation Scaling (Distance and Size Scale)**                          | ✔️ Completed |                                                                             |
+| **11. Dynamic Object Interaction (Mass Changes, Movements, etc.)**           | ✔️ Completed |                                                                             |
+| **12. Legend and Information Details (Display Object Info)**                           | ✔️ Completed |                                                                             |
 
 
 ### User Interactions Deliverables

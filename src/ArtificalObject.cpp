@@ -12,37 +12,50 @@
 
 using namespace std;
 
-ArtificialObject::ArtificialObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color, double width, double height, double thrustCapacity)
-    : SpaceObject(name, x, y, vx, vy, mass, color), width(width), height(height), thrustCapacity(thrustCapacity) {}
-void ArtificialObject::render(sf::RenderWindow &window, double scale, double centerX, double centerY, double ratio) const {
-    double screenX = centerX + x * scale;
-    double screenY = centerY + y * scale;
+ArtificialObject::ArtificialObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color, double width, double height, double thrustCapacity, sf::Color sfColor)
+    : SpaceObject(name, x, y, vx, vy, mass, color, sfColor), width(width), height(height), thrustCapacity(thrustCapacity) {}
 
-    // Debugging output
-    cout << "Rendering " << name << " at (" << screenX << ", " << screenY << ")\n";
+void ArtificialObject::render(sf::RenderWindow &window, double scale, double centerX, double centerY, double ratio) const
+{
+    double screenX = (x - SpaceObject::getViewOffsetX()) / scale + centerX;
+    double screenY = (y - SpaceObject::getViewOffsetY()) / scale + centerY;
 
-    double objectWidth = width / ratio;
-    double objectHeight = height / ratio;
+    double baseSize = sqrt(width * height) / ratio;
+    double logSize = log10(baseSize);
+    double objectSize = std::max(5.0, logSize * 5.0); 
 
-    sf::RectangleShape shape(sf::Vector2f(objectWidth, objectHeight));
+    sf::RectangleShape shape(sf::Vector2f(objectSize * 2, objectSize));
 
-    if (color == "Gray") shape.setFillColor(sf::Color(169, 169, 169));
-    else if (color == "Green") shape.setFillColor(sf::Color(0, 255, 0));
+    if (color == "Gray")
+        shape.setFillColor(sf::Color(169, 169, 169));
+    else if (color == "Green")
+        shape.setFillColor(sf::Color(0, 255, 0));
+    else if (color == "White")
+        shape.setFillColor(sf::Color(255, 255, 255));
+    else
+        shape.setFillColor(sf::Color(200, 200, 200));
 
-    shape.setPosition(screenX - objectWidth / 2, screenY - objectHeight / 2);
-    window.draw(shape);
+    shape.setOutlineThickness(1.0f);
+    shape.setOutlineColor(sf::Color::White);
+
+    shape.setPosition(screenX - objectSize, screenY - objectSize / 2);
+
+    if (screenX + objectSize >= 0 && screenX - objectSize <= window.getSize().x &&
+        screenY + objectSize >= 0 && screenY - objectSize <= window.getSize().y)
+    {
+        window.draw(shape);
+    }
 }
-
 
 bool ArtificialObject::isClicked(double mouseX, double mouseY, double scale, double centerX, double centerY, double sizeScale) const
 {
     double screenX = (x - SpaceObject::getViewOffsetX()) / scale + centerX;
     double screenY = (y - SpaceObject::getViewOffsetY()) / scale + centerY;
 
-    // Rectangle bounds
-    double halfWidth = width / (2.0 * scale);
-    double halfHeight = height / (2.0 * scale);
+    double baseSize = sqrt(width * height) / sizeScale;
+    double logSize = log10(baseSize);
+    double objectSize = std::max(5.0, logSize * 5.0);
 
-    return (mouseX >= screenX - halfWidth && mouseX <= screenX + halfWidth &&
-            mouseY >= screenY - halfHeight && mouseY <= screenY + halfHeight);
+    return (mouseX >= screenX - objectSize && mouseX <= screenX + objectSize &&
+            mouseY >= screenY - objectSize/2 && mouseY <= screenY + objectSize/2);
 }

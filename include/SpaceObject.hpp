@@ -27,11 +27,11 @@ protected:
     double ax, ay;                          // An acceleration (in m/s²)
     double mass;                            // A mass (in kg)
     double radius;                          // A radius (in m)
+    sf::Color sfColor;                      // A color in SFML format
 
 public:
-    SpaceObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color);
+    SpaceObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color, sf::Color sfColor = sf::Color::Transparent);       
     virtual ~SpaceObject() = default;
-
     static void updateViewOffset(double dx, double dy);
     static double getViewOffsetX();
     static double getViewOffsetY();

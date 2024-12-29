@@ -134,11 +134,7 @@ void Simulation::initializeObjects()
                                      2.7,
                                      1e4);
 
-    objects = {sun, earth, moon, europa, io, mercury, venus, mars, jupiter, saturn, uranus, neptune};
-    objects.push_back(ganymede);
-    objects.push_back(callisto);
-    objects.push_back(titan);
-    objects.push_back(iss);
+    objects = {sun, earth, moon, europa, io, mercury, venus, mars, jupiter, saturn, uranus, neptune, ganymede, callisto, titan, iss, hubble, gps};
 }
 
 void Simulation::handleEvents()

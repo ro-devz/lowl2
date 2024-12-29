@@ -21,7 +21,7 @@ protected:
     double radius; 
 
 public:
-    StellarObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color, double radius);
+    StellarObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color, double radius, sf::Color sfColor = sf::Color::Transparent);
     ~StellarObject() override = default;
     void render(sf::RenderWindow &window, double scale, double centerX, double centerY, double maxRadius) const override;
     virtual bool isClicked(double mouseX, double mouseY, double scale, double centerX, double centerY, double sizeScale) const override;

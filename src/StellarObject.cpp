@@ -13,8 +13,8 @@
 using namespace std;
 
 // Constructor implementation
-StellarObject::StellarObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color, double radius)
-    : SpaceObject(name, x, y, vx, vy, mass, color), radius(radius) {}
+StellarObject::StellarObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color, double radius, sf::Color sfColor)
+    : SpaceObject(name, x, y, vx, vy, mass, color, sfColor), radius(radius) {}
 
 void StellarObject::render(sf::RenderWindow &window, double scale, double centerX, double centerY, double sizeScale) const
 {
@@ -35,7 +35,11 @@ void StellarObject::render(sf::RenderWindow &window, double scale, double center
     }
     sf::CircleShape shape(planetSize);
 
-    if (color == "Yellow")
+    if (sfColor != sf::Color::Transparent){
+        shape.setFillColor(sfColor);
+    }
+
+    else if (color == "Yellow")
         shape.setFillColor(sf::Color(255, 255, 51)); // Bright Yellow
     else if (color == "Gray")
         shape.setFillColor(sf::Color(192, 192, 192)); // Light Gray for better contrast
