@@ -28,7 +28,7 @@ public:
     }
 
     bool start() {
-        if (listener.listen(53000) != sf::Socket::Done) {
+        if (listener.listen(8080) != sf::Socket::Done) {
             return false;
         }
         running = true;

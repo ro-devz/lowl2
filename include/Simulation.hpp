@@ -45,6 +45,7 @@ private:
 public:
     Simulation();
     void run();
+    
 };
 
 #endif
