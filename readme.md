@@ -16,19 +16,21 @@
    - [Steps to Install MinGW](#steps-to-install-mingw)
    - [Steps to Install SFML](#steps-to-install-sfml)
 
+---
 
 ### 1. Project Overview
 This project simulates stellar objects using SFML graphics. Follow the instructions below to set up the necessary development environment and execute the project on your system.
 
-!! There is 2 ways of starting the project: !!
+There are 2 ways to start the project:
 
-- No Client / Server :  `.\bin\FinalProject.exe`
-<br>
-- Client and Server :  `.\bin\FinalProject.exe server` AND `.\bin\FinalProject.exe client localhost`
+- **No Client / Server** :  `.\bin\FinalProject.exe`
+- **Client and Server** :  `.\bin\FinalProject.exe server` AND `.\bin\FinalProject.exe client localhost`
 
-## 2. Project delivrables
+---
 
-### Planets, Moons, and Satellites 
+### 2. Project Deliverables
+
+#### Planets, Moons, and Satellites 
 
 | **Name**     | **Added to System** | **Type**   | **Associated Planet**  |
 |--------------|---------------------|------------|------------------------|
@@ -60,8 +62,9 @@ This project simulates stellar objects using SFML graphics. Follow the instructi
 | Pandora      | ❌                  | Satellite  | Saturn                 |
 | Epimetheus   | ❌                  | Satellite  | Saturn                 |
 
+---
 
-### Core Simulation Features
+#### Core Simulation Features
 
 | **Feature**                                                                 | **Status**  | **Comments**                                                                 |
 |-----------------------------------------------------------------------------|-------------|-----------------------------------------------------------------------------|
@@ -78,9 +81,9 @@ This project simulates stellar objects using SFML graphics. Follow the instructi
 | **11. Dynamic Object Interaction (Mass Changes, Movements, etc.)**           | ✔️ Completed |                                                                             |
 | **12. Legend and Information Details (Display Object Info)**                           | ✔️ Completed |                                                                             |
 
+---
 
-### User Interactions Deliverables
-
+#### User Interactions Deliverables
 
 | **Interaction**                                                            | **Status**  | **Comments**                                                                   |
 |----------------------------------------------------------------------------|-------------|-----------------------------------------------------------------------------   |
@@ -92,23 +95,24 @@ This project simulates stellar objects using SFML graphics. Follow the instructi
 | **6. Decrease time factor (using `-` key when no object is selected)**       | ✔️ Completed | `realTimeStep` is decreased by 3600 seconds (1 hour)                       |
 | **7. Select object (clicking with left mouse button)**                      | ✔️ Completed |                                                                             |
 | **8. Delete selected object (using `Delete` key)**                          | ✔️ Completed |                                                                             |
-| **9. Move selected object (dragging with left mouse button)**               | ✔️ Completed | !! The object must be selected first !! <br> Then, you can click again on the object and dragg it to move it |
+| **9. Move selected object (dragging with left mouse button)**               | ✔️ Completed | !! The object must be selected first !! <br> Then, you can click again on the object and drag it to move it |
 | **10. Apply thrust to selected artificial object (arrow keys)**             | ❌ In Progress |                                                                           |
 | **11. Increase mass of selected object (using `+` key)**                    | ✔️ Completed | Selected object mass is multiplied by 1.1 (10% increase)                    |
 | **12. Decrease mass of selected object (using `-` key)**                    | ✔️ Completed | Selected object mass is multiplied by 0.9 (10% decrease)                    |
-|**13. Deselect object (using Escape key)**	                                    |✔️ Completed	| While Escape not press, the object will be selected and you won't be able to change of selected object                                                                           |
+| **13. Deselect object (using Escape key)**	                                |✔️ Completed	| While Escape not pressed, the object will remain selected and you won't be able to change the selected object |
 
+---
 
-## 3. Compile the Project
+### 3. Compile the Project
 
-Once you’ve installed MinGW and set up SFML, you can compile the project using the  `make` or the `g++` command in the **Terminal** of VS code.
+Once you’ve installed MinGW and set up SFML, you can compile the project using the `make` or the `g++` command in the **Terminal** of VS Code.
 
-### Commands to Compile:
+#### Commands to Compile:
 Navigate to the folder containing your source files and run the following command:
 
 ```bash
 make
-```
+
 
 If you can't use the make command, compile the project manually
 
