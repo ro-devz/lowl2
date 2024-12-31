@@ -235,13 +235,9 @@ void SimulationClient::render(Legend *legend, Legend *infoMenu)
                     SIZE_SCALE);
     }
 
-    // Update and render legends
     legend->render(window);
-
     infoMenu->updateObject(selectedObject);
-
     infoMenu->render(window);
-
     window.display();
 }
 

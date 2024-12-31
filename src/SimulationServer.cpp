@@ -145,10 +145,8 @@ SimulationServer::~SimulationServer()
 bool SimulationServer::start() {
     unsigned short port = 8080;
     
-    // Make sure any previous instances are cleaned up
     stop();
     
-    // Try to bind and listen
     sf::Socket::Status status = listener.listen(port);
     if (status != sf::Socket::Done) {
         std::cerr << "Error: Failed to start listener on port " << port 
@@ -175,10 +173,8 @@ bool SimulationServer::start() {
 void SimulationServer::stop() {
     running = false;
     
-    // Close the listener first to stop accepting new connections
     listener.close();
     
-    // Close all client sockets
     std::lock_guard<std::mutex> lock(objectsMutex);
     for (auto* client : clients) {
         client->disconnect();
@@ -186,7 +182,6 @@ void SimulationServer::stop() {
     }
     clients.clear();
     
-    // Join all threads
     if (updateThread.joinable()) {
         updateThread.join();
     }
@@ -216,12 +211,12 @@ void SimulationServer::acceptClients() {
                 clientThreads.emplace_back(&SimulationServer::handleClientMessages, this, client);
             } else {
                 delete client;
-                if (running) {  // Only log if we're still meant to be running
+                if (running) {
                     std::cerr << "Failed to accept connection, status: " << status << std::endl;
                 }
             }
         } catch (const std::exception& e) {
-            if (running) {  // Only log if we're still meant to be running
+            if (running) {  
                 std::cerr << "Exception in acceptClients: " << e.what() << std::endl;
             }
         }
@@ -233,13 +228,10 @@ void SimulationServer::updateLoop()
     while (running)
     {
         float deltaTime = clock.restart().asSeconds();
-
-        // Update physics
         {
             std::lock_guard<std::mutex> lock(objectsMutex);
             double adjustedTimeStep = realTimeStep * deltaTime;
 
-            // Check for collisions
             for (size_t i = 0; i < objects.size(); i++)
             {
                 for (size_t j = i + 1; j < objects.size(); j++)
@@ -261,7 +253,6 @@ void SimulationServer::updateLoop()
                 }
             }
 
-            // Update object positions
             for (auto *obj : objects)
             {
                 obj->computeGravitationalForces(objects);
@@ -275,11 +266,8 @@ void SimulationServer::updateLoop()
             //legend->update(realTimeStep, totalElapsedTime, SpaceObject::getViewOffsetX(), SpaceObject::getViewOffsetY());
         }
 
-        // Broadcast updates to all clients
         broadcastUpdate();
-
-        // Maintain reasonable update rate
-        sf::sleep(sf::milliseconds(16)); // ~60 updates per second
+        sf::sleep(sf::milliseconds(60)); 
     }
 }
 void SimulationServer::handleUserInteraction(const UserInteraction &interaction)

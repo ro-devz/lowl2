@@ -19,8 +19,14 @@
 #include <iostream>
 
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        std::cout << "Usage: " << argv[0] << " [server|client]" << std::endl;
+    if (argc == 1) {
+        Simulation simulation;
+        simulation.run();
+        return 0;
+    }
+    
+    else if (argc != 2 && argc != 3) {
+        std::cout << "Usage: " << argv[0] << " [server|client localhost]" << std::endl;
         return 1;
     }
 
@@ -37,8 +43,7 @@ int main(int argc, char* argv[]) {
     else if (mode == "client") {
         SimulationClient client;
         std::string address;
-        std::cout << "Enter server address: ";
-        std::cin >> address;
+        address = argv[2];
         
         if (!client.connect(address)) {
             std::cout << "Failed to connect to server" << std::endl;
