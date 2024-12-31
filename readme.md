@@ -1,10 +1,34 @@
 # Final Project - Stellar Simulation
 
+# Table of Contents
+1. [Project Overview](#project-overview)
+2. [Project Deliverables](#project-deliverables)
+   - [Planets, Moons, and Satellites](#planets-moons-and-satellites)
+   - [Core Simulation Features](#core-simulation-features)
+   - [User Interactions Deliverables](#user-interactions-deliverables)
+3. [Compile the Project](#compile-the-project)
+   - [Commands to Compile](#commands-to-compile)
+4. [Run the Code](#run-the-code)
+5. [Installation and Configuration](#installation-and-configuration)
+   - [Prerequisites](#prerequisites)
+     - [MinGW (GCC)](#mingw-gcc)
+     - [SFML (Simple and Fast Multimedia Library)](#sfml-simple-and-fast-multimedia-library)
+   - [Steps to Install MinGW](#steps-to-install-mingw)
+   - [Steps to Install SFML](#steps-to-install-sfml)
+
+
+### 1. Project Overview
 This project simulates stellar objects using SFML graphics. Follow the instructions below to set up the necessary development environment and execute the project on your system.
 
-## Project delivrables
+!! There is 2 ways of starting the project: !!
 
-## Planets, Moons, and Satellites 
+- No Client / Server :  `.\bin\FinalProject.exe`
+<br>
+- Client and Server :  `.\bin\FinalProject.exe server` AND `.\bin\FinalProject.exe client localhost`
+
+## 2. Project delivrables
+
+### Planets, Moons, and Satellites 
 
 | **Name**     | **Added to System** | **Type**   | **Associated Planet**  |
 |--------------|---------------------|------------|------------------------|
@@ -37,7 +61,7 @@ This project simulates stellar objects using SFML graphics. Follow the instructi
 | Epimetheus   | ❌                  | Satellite  | Saturn                 |
 
 
-## Core Simulation Features
+### Core Simulation Features
 
 | **Feature**                                                                 | **Status**  | **Comments**                                                                 |
 |-----------------------------------------------------------------------------|-------------|-----------------------------------------------------------------------------|
@@ -48,7 +72,7 @@ This project simulates stellar objects using SFML graphics. Follow the instructi
 | **5. Object Collision Handling (Gravitational Pull Impact)**                | ✔️ Completed |                                                                             |
 | **6. Time and Real-Time Step Calculation**                                   | ✔️ Completed |                                                                             |
 | **7. Stellar Object Rendering (Drawing Objects to the Window)**                      | ✔️ Completed |                                                                             |
-| **8. Artificial Object Rendering (Drawing Objects to the Window)**                      | ❌ In Progress |                                                                             |
+| **8. Artificial Object Rendering (Drawing Objects to the Window)**                      | ✔️ Completed |                                                                             |
 | **9. Update Object Size and Position (based on mass, distance, etc.)**      | ✔️ Completed |                                                                             |
 | **10. Simulation Scaling (Distance and Size Scale)**                          | ✔️ Completed |                                                                             |
 | **11. Dynamic Object Interaction (Mass Changes, Movements, etc.)**           | ✔️ Completed |                                                                             |
@@ -74,7 +98,38 @@ This project simulates stellar objects using SFML graphics. Follow the instructi
 | **12. Decrease mass of selected object (using `-` key)**                    | ✔️ Completed | Selected object mass is multiplied by 0.9 (10% decrease)                    |
 |**13. Deselect object (using Escape key)**	                                    |✔️ Completed	| While Escape not press, the object will be selected and you won't be able to change of selected object                                                                           |
 
-## Installation and Configuration
+
+## 3. Compile the Project
+
+Once you’ve installed MinGW and set up SFML, you can compile the project using the  `make` or the `g++` command in the **Terminal** of VS code.
+
+### Commands to Compile:
+Navigate to the folder containing your source files and run the following command:
+
+```bash
+make
+```
+
+If you can't use the make command, compile the project manually
+
+```bash
+g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project.cpp .\src\StellarObject.cpp .\src\ArtificalObject.cpp .\src\SpaceObject.cpp .\src\legend.cpp .\src\simulation.cpp -lsfml-graphics -lsfml-window -lsfml-system
+```
+or 
+```bash
+g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project.cpp .\src\StellarObject.cpp .\src\ArtificalObject.cpp .\src\SpaceObject.cpp .\src\legend.cpp .\src\simulationclient.cpp .\src\simulationserver.cpp -lsfml-graphics -lsfml-window -lsfml-system
+```
+
+## 4. Run the code:
+
+
+- No Client / Server :  `.\bin\FinalProject.exe`
+<br>
+- Client and Server :  `.\bin\FinalProject.exe server` AND `.\bin\FinalProject.exe client localhost`
+
+
+
+## 5. Installation and Configuration
 ### Prerequisites
 
 - **MinGW** (Minimalist GNU for Windows) for GCC
@@ -120,28 +175,6 @@ SFML is the library used for graphics, window management, and system interaction
 4. **Copy SFML DLLs**:
    - From the `\SFML-2.6.2\bin` folder, **copy the `.dll` files** and paste them into the root directory of your project (same location as your compiled executable).
 
-#### 3. Compile the Project
 
-Once you’ve installed MinGW and set up SFML, you can compile the project using the  `make` or the `g++` command in the **Terminal** of VS code.
-
-##### Commands to Compile:
-
-
-
-Navigate to the folder containing your source files and run the following command:
-
-```bash
-make
-```
-If you can't use the make command, compile the project manually
-
-```bash
-g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project.cpp .\src\StellarObject.cpp .\src\ArtificalObject.cpp .\src\SpaceObject.cpp .\src\legend.cpp .\src\simulation.cpp -lsfml-graphics -lsfml-window -lsfml-system
-```
-
-
-#### 4. Run the code:
-
-```.\bin\FinalProject.exe```
 
 
