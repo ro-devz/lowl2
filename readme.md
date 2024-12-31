@@ -112,25 +112,23 @@ Navigate to the folder containing your source files and run the following comman
 
 ```bash
 make
-
-
-If you can't use the make command, compile the project manually
+```
+If you can't use the make command, compile the project manually:
 
 ```bash
 g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project.cpp .\src\StellarObject.cpp .\src\ArtificalObject.cpp .\src\SpaceObject.cpp .\src\legend.cpp .\src\simulation.cpp -lsfml-graphics -lsfml-window -lsfml-system
 ```
-or 
+
+or
+
 ```bash
-g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project.cpp .\src\StellarObject.cpp .\src\ArtificalObject.cpp .\src\SpaceObject.cpp .\src\legend.cpp .\src\simulationclient.cpp .\src\simulationserver.cpp -lsfml-graphics -lsfml-window -lsfml-system
+g++ -IC:\SFML-2.6.2\include -I.\include -LC:\SFML-2.6.2\lib -o bin\FinalProject.exe .\src\Final-project
 ```
 
-## 4. Run the code:
+## 4. Run the Code
 
-
-- No Client / Server :  `.\bin\FinalProject.exe`
-<br>
-- Client and Server :  `.\bin\FinalProject.exe server` AND `.\bin\FinalProject.exe client localhost`
-
+    No Client / Server : `.\bin\FinalProject.exe`
+    Client and Server : `.\bin\FinalProject.exe` server AND `.\bin\FinalProject.exe` client localhost
 
 
 ## 5. Installation and Configuration
