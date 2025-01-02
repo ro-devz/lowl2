@@ -105,7 +105,7 @@ There are 2 ways to start the project:
 
 ### 3. Compile the Project
 
-Once you’ve installed MinGW and set up SFML, you can compile the project using the `make` or the `g++` command in the **Terminal** of VS Code.
+Once you’ve installed MinGW and set up SFML ([Installation and Configuration](#installation-and-configuration)), you can compile the project using the `make` or the `g++` command in the **Terminal** of VS Code.
 
 #### Commands to Compile:
 Navigate to the folder containing your source files and run the following command:

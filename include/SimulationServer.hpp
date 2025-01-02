@@ -26,7 +26,6 @@ private:
     void acceptClients();
     void updateLoop();
 
-
     std::vector<SpaceObject *> objects;
     std::vector<sf::TcpSocket *> clients;
     std::vector<std::thread> clientThreads;

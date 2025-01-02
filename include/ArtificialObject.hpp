@@ -29,11 +29,11 @@ public:
     virtual bool isClicked(double mouseX, double mouseY, double scale, double centerX, double centerY, double sizeScale) const override;
 
     void applyThrust(double dx, double dy) {
-        // Apply thrust in the opposite direction of arrow keys
         double thrustX = -dx * thrustCapacity / mass;
         double thrustY = -dy * thrustCapacity / mass;
         setAcceleration(ax + thrustX, ay + thrustY);
     }
+    double getThrustCapacity() const { return thrustCapacity; }
 
     bool isArtificial() const { return true; }
     virtual double getCollisionRadius() const override { 

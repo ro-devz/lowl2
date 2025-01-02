@@ -12,22 +12,18 @@
 
 using namespace std;
 
-// Constructor implementation
 StellarObject::StellarObject(const string &name, double x, double y, double vx, double vy, double mass, const string &color, double radius, sf::Color sfColor)
     : SpaceObject(name, x, y, vx, vy, mass, color, sfColor), radius(radius) {}
 
 void StellarObject::render(sf::RenderWindow &window, double scale, double centerX, double centerY, double sizeScale) const
 {
-    // Scale positions with the zoom factor
     double screenX = (x - SpaceObject::getViewOffsetX()) / scale + window.getSize().x / 2.0;
     double screenY = (y - SpaceObject::getViewOffsetY()) / scale + window.getSize().y / 2.0;
 
-    // Minimum size for visibility
     double baseSize = radius / sizeScale;
     double logSize = log10(baseSize);
-    double planetSize = std::max(2.0, logSize * 3.0); // Adjusted multiplier
+    double planetSize = std::max(2.0, logSize * 3.0); 
 
-    // Set minimum size threshold that scales with zoom
     double minSize = 2.0 / scale;
     if (planetSize < minSize)
     {
@@ -66,12 +62,10 @@ bool StellarObject::isClicked(double mouseX, double mouseY, double scale, double
     double screenX = (x - SpaceObject::getViewOffsetX()) / scale + centerX;
     double screenY = (y - SpaceObject::getViewOffsetY()) / scale + centerY;
     
-    // Calculate size as in render function
     double baseSize = radius / sizeScale;
     double logSize = log10(baseSize);
-    double planetSize = std::max(2.0, logSize * 3.0);  // Adjusted multiplier
+    double planetSize = std::max(2.0, logSize * 3.0);  
     
-    // Check if mouse is within planet circle
     double dx = mouseX - screenX;
     double dy = mouseY - screenY;
     return (dx * dx + dy * dy) <= (planetSize * planetSize);

@@ -16,24 +16,19 @@
 class Legend
 {
 private:
-    sf::Font font;                      // Font to use for the text
-    sf::Text text;                      // Text object for rendering information
-    double screenWidth, screenHeight;   // Screen dimensions
-    std::vector<SpaceObject *> objects; // Objects to display information about
+    sf::Font font;                      
+    sf::Text text;                      
+    double screenWidth, screenHeight;   
+    std::vector<SpaceObject *> objects;
 
 public:
-    // Constructor: Initialize the legend with parameters
     Legend(double screenWidth, double screenHeight, std::vector<SpaceObject *> objects, float x, float y);
-    // Update methods
     void update(double timeStep, double totalElapsedTime, double centerX, double centerY);
     void updateObject(SpaceObject *selectedObject);
-
-    // Render the legend to the window
     void render(sf::RenderWindow &window);
     void setObjects(std::vector<SpaceObject *> updatedObjects);
 
 private:
-    // Helper function to format a number as a string
     std::string toString(double number);
 };
 

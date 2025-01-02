@@ -1,3 +1,10 @@
+//============================================================================
+// Name        : NetworkMessage.hpp
+// Author      : Romane Devezeaux de Lavergne
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Final Project
+//============================================================================
 #ifndef NETWORK_MESSAGE_HPP
 #define NETWORK_MESSAGE_HPP
 
@@ -6,7 +13,8 @@
 
 enum class MessageType : sf::Uint8 {
     OBJECT_UPDATE = 1,
-    USER_INTERACTION = 2
+    USER_INTERACTION = 2,
+    LEGEND_UPDATE = 3
 };
 
 struct UserInteraction {
@@ -27,6 +35,13 @@ struct UserInteraction {
     double value = 0.0;
 };
 
+struct LegendData {
+    double timeStep;
+    double totalElapsedTime;
+    double viewOffsetX;
+    double viewOffsetY;
+};
+
 class NetworkMessage {
 public:
     static sf::Packet createUserInteractionPacket(const UserInteraction& interaction) {
@@ -37,6 +52,16 @@ public:
                << interaction.x
                << interaction.y
                << interaction.value;
+        return packet;
+    }
+
+    static sf::Packet createLegendUpdatePacket(const LegendData& legendData) {
+        sf::Packet packet;
+        packet << sf::Uint8(MessageType::LEGEND_UPDATE)
+               << legendData.timeStep
+               << legendData.totalElapsedTime
+               << legendData.viewOffsetX
+               << legendData.viewOffsetY;
         return packet;
     }
 };

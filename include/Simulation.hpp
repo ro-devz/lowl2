@@ -27,7 +27,6 @@ private:
     SpaceObject* selectedObject;
     bool isObjectSelected;
     
-    // Constants
     const double SCREEN_WIDTH;
     const double SCREEN_HEIGHT;
     const double MAX_DISTANCE;

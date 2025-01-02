@@ -1,3 +1,11 @@
+//============================================================================
+// Name        : SimulationServer.cpp
+// Author      : Romane Devezeaux de Lavergne
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Final Project
+//============================================================================
+
 #include "SimulationServer.hpp"
 #include "StellarObject.hpp"
 #include "ArtificialObject.hpp"
@@ -157,7 +165,6 @@ bool SimulationServer::start() {
     std::cout << "Server listening on port " << port << std::endl;
     running = true;
     
-    // Start server threads
     try {
         updateThread = std::thread(&SimulationServer::updateLoop, this);
         acceptThread = std::thread(&SimulationServer::acceptClients, this);
@@ -222,54 +229,79 @@ void SimulationServer::acceptClients() {
         }
     }
 }
-void SimulationServer::updateLoop()
-{
+
+void SimulationServer::updateLoop() {
     sf::Clock clock;
-    while (running)
-    {
+    while (running) {
         float deltaTime = clock.restart().asSeconds();
+        double adjustedTimeStep = realTimeStep * deltaTime;
         {
             std::lock_guard<std::mutex> lock(objectsMutex);
-            double adjustedTimeStep = realTimeStep * deltaTime;
+            
+            bool collisionOccurred = false;
+            SpaceObject *obj1 = nullptr;
+            SpaceObject *obj2 = nullptr;
 
-            for (size_t i = 0; i < objects.size(); i++)
-            {
-                for (size_t j = i + 1; j < objects.size(); j++)
-                {
+            for (size_t i = 0; i < objects.size() && !collisionOccurred; i++) {
+                for (size_t j = i + 1; j < objects.size() && !collisionOccurred; j++) {
+                    if (!objects[i] || !objects[j]) continue;
+                    
                     double dx = objects[i]->getX() - objects[j]->getX();
                     double dy = objects[i]->getY() - objects[j]->getY();
                     double distance = sqrt(dx * dx + dy * dy);
 
-                    if (distance < (objects[i]->getCollisionRadius() + objects[j]->getCollisionRadius()))
-                    {
-                        SpaceObject *newObject = SpaceObject::handleCollision(objects[i], objects[j]);
-                        objects.erase(objects.begin() + j);
-                        objects.erase(objects.begin() + i);
-                        delete objects[i];
-                        delete objects[j];
-                        objects.push_back(newObject);
-                        break;
+                    if (distance < (objects[i]->getCollisionRadius() + objects[j]->getCollisionRadius())) {
+                        collisionOccurred = true;
+                        obj1 = objects[i];
+                        obj2 = objects[j];
                     }
                 }
             }
 
-            for (auto *obj : objects)
-            {
-                obj->computeGravitationalForces(objects);
+            if (collisionOccurred && obj1 && obj2) {
+                try {
+                    SpaceObject* newObject = SpaceObject::handleCollision(obj1, obj2);
+                    
+                    if (newObject) {
+                        // Remove old objects
+                        for (auto& obj : objects) {
+                            if (obj == obj1 || obj == obj2) {
+                                delete obj; // Delete memory
+                                obj = nullptr; // Nullify the pointer
+                            }
+                        }
+
+                        // Remove null pointers from the list
+                        objects.erase(
+                            std::remove(objects.begin(), objects.end(), nullptr),
+                            objects.end()
+                        );
+
+                        objects.push_back(newObject);
+                    }
+                } catch (const std::exception& e) {
+                    std::cerr << "Collision handling error: " << e.what() << std::endl;
+                }
             }
-            for (auto *obj : objects)
-            {
-                obj->update(adjustedTimeStep);
+
+            for (auto* obj : objects) {
+                if (obj) obj->computeGravitationalForces(objects);
+            }
+
+            for (auto* obj : objects) {
+                if (obj) obj->update(adjustedTimeStep);
             }
 
             totalElapsedTime += adjustedTimeStep;
-            //legend->update(realTimeStep, totalElapsedTime, SpaceObject::getViewOffsetX(), SpaceObject::getViewOffsetY());
         }
 
         broadcastUpdate();
-        sf::sleep(sf::milliseconds(60)); 
+
+        sf::sleep(sf::milliseconds(16)); // ~60 FPS
     }
 }
+
+
 void SimulationServer::handleUserInteraction(const UserInteraction &interaction)
 {
     SpaceObject *targetObj = nullptr;
@@ -310,7 +342,6 @@ void SimulationServer::handleUserInteraction(const UserInteraction &interaction)
             break;
 
         default:
-            // Handle other interaction types if needed
             break;
         }
     }
@@ -337,44 +368,64 @@ void SimulationServer::handleClientMessages(sf::TcpSocket *client)
         }
     }
 }
-void SimulationServer::broadcastUpdate()
-{
-    sf::Packet packet;
-    packet << sf::Uint8(MessageType::OBJECT_UPDATE);
-    packet << sf::Uint32(objects.size());
 
-    for (const auto obj : objects)
+
+void SimulationServer::broadcastUpdate() {
+    sf::Packet objectPacket;
+    objectPacket << sf::Uint8(MessageType::OBJECT_UPDATE);
+    
     {
-        packet << obj->getName()
-               << obj->getX()
-               << obj->getY()
-               << obj->getVx()
-               << obj->getVy()
-               << obj->getMass()
-               << obj->getColor()
-               << (dynamic_cast<ArtificialObject*>(obj) != nullptr);
+        std::lock_guard<std::mutex> lock(objectsMutex);
+        size_t validObjectCount = std::count_if(objects.begin(), objects.end(),
+            [](SpaceObject* obj) { return obj != nullptr; });
+            
+        objectPacket << sf::Uint32(validObjectCount);
 
-        if (auto artificial = dynamic_cast<ArtificialObject*>(obj))
-        {
-            packet << artificial->getWidth()
-                   << artificial->getHeight();
-                  // << artificial->getThrustCapacity();
-        }
-        else if (auto stellar = dynamic_cast<StellarObject*>(obj))
-        {
-            packet << stellar->getRadius();
+        for (const auto* obj : objects) {
+            if (!obj) continue;
+            
+            objectPacket << obj->getName()
+                        << obj->getX()
+                        << obj->getY()
+                        << obj->getVx()
+                        << obj->getVy()
+                        << obj->getMass()
+                        << obj->getColor()
+                        << (dynamic_cast<const ArtificialObject*>(obj) != nullptr);
+
+            if (auto artificial = dynamic_cast<const ArtificialObject*>(obj)) {
+                objectPacket << artificial->getWidth()
+                            << artificial->getHeight();
+                            //<< artificial->getThrustCapacity();
+            }
+            else if (auto stellar = dynamic_cast<const StellarObject*>(obj)) {
+                objectPacket << stellar->getRadius();
+            }
         }
     }
+    LegendData legendData{
+        realTimeStep,
+        totalElapsedTime,
+        SpaceObject::getViewOffsetX(),
+        SpaceObject::getViewOffsetY()
+    };
+    sf::Packet legendPacket = NetworkMessage::createLegendUpdatePacket(legendData);
+
     std::lock_guard<std::mutex> lock(objectsMutex);
-    for (auto it = clients.begin(); it != clients.end();)
-    {
-        if ((*it)->send(packet) != sf::Socket::Done)
-        {
+    auto it = clients.begin();
+    while (it != clients.end()) {
+        bool clientValid = true;
+        
+        if ((*it)->send(objectPacket) != sf::Socket::Done ||
+            (*it)->send(legendPacket) != sf::Socket::Done) {
+            clientValid = false;
+        }
+
+        if (!clientValid) {
+            std::cout << "Client disconnected. Removing from list." << std::endl;
             delete *it;
             it = clients.erase(it);
-        }
-        else
-        {
+        } else {
             ++it;
         }
     }

@@ -19,9 +19,9 @@ Legend::Legend(double screenWidth, double screenHeight, std::vector<SpaceObject 
     }
 
     text.setFont(font);
-    text.setCharacterSize(11); // Set font size
+    text.setCharacterSize(11); 
     text.setFillColor(sf::Color::White);
-    text.setPosition(x, y); // Set position to the specified coordinates
+    text.setPosition(x, y); 
 }
 
 void Legend::update(double timeStep, double totalElapsedTime, double viewOffsetX, double viewOffsetY)

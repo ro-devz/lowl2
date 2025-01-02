@@ -1,3 +1,11 @@
+//============================================================================
+// Name        : SimulationClient.cpp
+// Author      : Romane Devezeaux de Lavergne
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Final Project
+//============================================================================
+
 #include "SimulationClient.hpp"
 #include "NetworkMessage.hpp"
 #include "ArtificialObject.hpp"
@@ -87,7 +95,6 @@ void SimulationClient::handleEvents()
                 double mouseX = event.mouseButton.x;
                 double mouseY = event.mouseButton.y;
 
-                // std::lock_guard<std::mutex> lock(objectsMutex);
                 SpaceObject *clickedObject = nullptr;
                 for (auto *obj : objects)
                 {
@@ -104,7 +111,7 @@ void SimulationClient::handleEvents()
                     selectedObject = clickedObject;
                     isObjectSelected = true;
                     cout << "Selected object: " << selectedObject->getName() << endl;
-                    // Send object selection to server
+
                     UserInteraction interaction;
                     interaction.type = UserInteraction::Type::OBJECT_SELECT;
                     interaction.objectName = clickedObject->getName();
@@ -133,7 +140,6 @@ void SimulationClient::handleEvents()
             SpaceObject::updateViewOffset(worldDeltaX, worldDeltaY);
             lastMousePos = currentMousePos;
 
-            // Send view change to server
             UserInteraction interaction;
             interaction.type = UserInteraction::Type::VIEW_CHANGE;
             interaction.x = worldDeltaX;
@@ -148,7 +154,6 @@ void SimulationClient::handleEvents()
             double worldDeltaX = delta.x * SCALE / viewScale;
             double worldDeltaY = delta.y * SCALE / viewScale;
 
-            // Send object drag to server
             UserInteraction interaction;
             interaction.type = UserInteraction::Type::MOUSE_DRAG;
             interaction.objectName = selectedObject->getName();
@@ -183,7 +188,6 @@ void SimulationClient::handleEvents()
                 }
                 else if (event.key.code == sf::Keyboard::Add || event.key.code == sf::Keyboard::Subtract)
                 {
-                    // Send mass change to server
                     UserInteraction interaction;
                     interaction.type = UserInteraction::Type::MASS_CHANGE;
                     interaction.objectName = selectedObject->getName();
@@ -200,12 +204,10 @@ void SimulationClient::handleEvents()
             {
                 if (event.key.code == sf::Keyboard::Add || event.key.code == sf::Keyboard::Subtract)
                 {
-                    // Send time change to server
                     UserInteraction interaction;
                     interaction.type = UserInteraction::Type::TIME_CHANGE;
                     interaction.value = (event.key.code == sf::Keyboard::Add) ? 3600.0 : -3600.0;
                     sendInteraction(interaction);
-                    
                 }
             }
         }
@@ -223,21 +225,31 @@ void SimulationClient::sendInteraction(const UserInteraction &interaction)
 
 void SimulationClient::render(Legend *legend, Legend *infoMenu)
 {
-
     window.clear(sf::Color::Black);
 
-    std::lock_guard<std::mutex> lock(objectsMutex);
-    for (auto *obj : objects)
     {
-        obj->render(window, SCALE / viewScale,
-                    window.getSize().x / 2.0,
-                    window.getSize().y / 2.0,
-                    SIZE_SCALE);
+        std::lock_guard<std::mutex> lockObjects(objectsMutex);
+        for (auto *obj : objects)
+        {
+            obj->render(window, SCALE / viewScale,
+                        window.getSize().x / 2.0,
+                        window.getSize().y / 2.0,
+                        SIZE_SCALE);
+        }
     }
 
-    legend->render(window);
-    infoMenu->updateObject(selectedObject);
-    infoMenu->render(window);
+    {
+        std::lock_guard<std::mutex> lockLegend(legendMutex);
+        legend->update(currentLegendData.timeStep,
+                       currentLegendData.totalElapsedTime,
+                       currentLegendData.viewOffsetX,
+                       currentLegendData.viewOffsetY);
+        legend->render(window);
+
+        infoMenu->updateObject(selectedObject);
+        infoMenu->render(window);
+    }
+
     window.display();
 }
 
@@ -246,7 +258,9 @@ void SimulationClient::receiveUpdates()
     while (running)
     {
         sf::Packet packet;
-        if (socket.receive(packet) == sf::Socket::Done)
+        sf::Socket::Status status = socket.receive(packet);
+
+        if (status == sf::Socket::Done)
         {
             sf::Uint8 messageTypeRaw;
             packet >> messageTypeRaw;
@@ -258,61 +272,112 @@ void SimulationClient::receiveUpdates()
                 packet >> objectCount;
 
                 std::vector<SpaceObject *> newObjects;
-                for (sf::Uint32 i = 0; i < objectCount; ++i)
+                newObjects.reserve(objectCount);
+
+                std::string selectedName = selectedObject ? selectedObject->getName() : "";
+
+                try
                 {
-                    std::string name, color;
-                    double x, y, vx, vy, mass;
-                    bool isArtificial;
-                    double radius, width, height, thrust;
-
-                    packet >> name >> x >> y >> vx >> vy >> mass >> color >> isArtificial;
-
-                    SpaceObject *obj;
-                    if (isArtificial)
+                    for (sf::Uint32 i = 0; i < objectCount; ++i)
                     {
-                        packet >> width >> height >> thrust;
-                        obj = new ArtificialObject(name, x, y, vx, vy, mass, color, width, height, thrust);
-                    }
-                    else
-                    {
-                        packet >> radius;
-                        obj = new StellarObject(name, x, y, vx, vy, mass, color, radius);
-                    }
+                        std::string name, color;
+                        double x, y, vx, vy, mass;
+                        bool isArtificial;
 
-                    // Preserve selected object reference
-                    if (selectedObject && obj->getName() == selectedObject->getName())
-                    {
-                        selectedObject = obj;
-                    }
+                        packet >> name >> x >> y >> vx >> vy >> mass >> color >> isArtificial;
 
-                    newObjects.push_back(obj);
+                        SpaceObject *obj = nullptr;
+                        if (isArtificial)
+                        {
+                            double width, height;
+                            packet >> width >> height;
+                            obj = new ArtificialObject(name, x, y, vx, vy, mass, color, width, height, 0);
+                        }
+                        else
+                        {
+                            double radius;
+                            packet >> radius;
+                            obj = new StellarObject(name, x, y, vx, vy, mass, color, radius);
+                        }
+
+                        if (obj)
+                            newObjects.push_back(obj);
+                    }
+                    {
+                        std::lock_guard<std::mutex> lock(objectsMutex);
+
+                        selectedObject = nullptr;
+
+                        for (auto *obj : objects)
+                        {
+                            delete obj;
+                        }
+                        objects.clear();
+
+                        objects = std::move(newObjects);
+
+                        // Restore selected object if it still exists
+                        if (!selectedName.empty())
+                        {
+                            for (auto *obj : objects)
+                            {
+                                // Check for exact match or merged object containing the name
+                                if (obj->getName() == selectedName ||
+                                    obj->getName().find(selectedName) != std::string::npos)
+                                {
+                                    selectedObject = obj;
+                                    break;
+                                }
+                            }
+
+                            if (!selectedObject)
+                            {
+                                isObjectSelected = false;
+                            }
+                        }
+
+                        if (legend)
+                            legend->setObjects(objects);
+                        if (infoMenu)
+                            infoMenu->setObjects(objects);
+                    }
                 }
-
-                std::lock_guard<std::mutex> lock(objectsMutex);
-                for (auto *obj : objects)
+                catch (const std::exception &e)
                 {
-                    delete obj;
+                    std::cerr << "Error processing update: " << e.what() << std::endl;
+                    for (auto *obj : newObjects)
+                    {
+                        delete obj;
+                    }
                 }
-                objects = newObjects;
             }
+            else if (messageType == MessageType::LEGEND_UPDATE)
+            {
+                std::lock_guard<std::mutex> lock(legendMutex);
+                packet >> currentLegendData.timeStep >> currentLegendData.totalElapsedTime >> currentLegendData.viewOffsetX >> currentLegendData.viewOffsetY;
+            }
+        }
+        else if (status == sf::Socket::Disconnected)
+        {
+            std::cout << "Server disconnected" << std::endl;
+            running = false;
+            break;
         }
     }
 }
 
 void SimulationClient::run()
 {
-
-    Legend *legend(new Legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects, 10.f, 10.f));
-    cout << "Legend created" << endl;
-    Legend *infoMenu(new Legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects, SCREEN_WIDTH - 300.f, 10.f));
+    legend = new Legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects, 10.f, 10.f);
+    infoMenu = new Legend(SCREEN_WIDTH, SCREEN_HEIGHT, objects, SCREEN_WIDTH - 300.f, 10.f);
 
     sf::Clock clock;
     while (window.isOpen() && running)
     {
-        float deltaTime = clock.restart().asSeconds();
-        totalElapsedTime += timeStep * deltaTime;
-
         handleEvents();
         render(legend, infoMenu);
     }
+
+    delete legend;
+    delete infoMenu;
 }

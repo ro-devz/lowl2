@@ -40,6 +40,10 @@ private:
     bool running;
     double timeStep;
     double totalElapsedTime;
+    LegendData currentLegendData;
+    std::mutex legendMutex;
+    Legend *legend;
+    Legend *infoMenu;
 
     // Member functions
     void handleEvents();
